@@ -393,6 +393,30 @@ def z_score_assertion_sub_regions(value = 0, min_value = 0, max_value = 0, asser
     return
 
 
+def z_score_assertion_after_transplant(value = 0, min_value = 0, max_value = 0, assertion_message = ""):
+    """
+    Asserting the z-score for a given assertion after transplant is in the right range from literature:
+        - |z| <= 1: VALIDATED
+        - |z| > 1: ERROR
+    @method z_score_assertion
+    @param {Float} value The input dentity value to assert
+    @param {Float} min_value The min density value set by literature
+    @param {Float} max_value The max density value set by literature
+    @param {String} assertion_message The assertion message to print if a Warning or an Error is raised
+    @return {None}
+    """
+    mean_val = (min_value + max_value)/2
+    std = mean_val - min_value
+    z_score = round((value - mean_val)/std, 2)
+    if abs(z_score) <= 1:
+        print("Validated")
+    elif (abs(z_score) > 1):
+        print("ERROR:", assertion_message)
+        raise DensityError(assertion_message)
+    else:
+        raise ValueError("Uknown value")
+    return
+
 # =============================================================================================
 
 
@@ -471,7 +495,7 @@ print("\nAssertion on sum of inhibitory + excitatory neuron densities after tran
 print_range_bar(exci_inhib_transplant_sum_sum, neuron_dens_litt - neuron_dens_tolerance, neuron_dens_litt + neuron_dens_tolerance)
 # print("/!\ Data not available")
 assertion_message = "sum of inhibitory + excitatory neuron densities after transplant out of literature range"
-z_score_assertion(exci_inhib_transplant_sum_sum, neuron_dens_litt - neuron_dens_tolerance, neuron_dens_litt + neuron_dens_tolerance, assertion_message)
+z_score_assertion_after_transplant(exci_inhib_transplant_sum_sum, neuron_dens_litt - neuron_dens_tolerance, neuron_dens_litt + neuron_dens_tolerance, assertion_message)
 
 # Assertion on total excitatory neuron density
 print("\nAssertion on total excitatory neuron densities")
@@ -528,7 +552,7 @@ inhib_transplant_sum_sum = np.sum(inhib_transplant_sum) / whole_brain_annotation
 print("\nAssertion on total sum of inhibitory ME-type neuron densities after transplant which should be inferior or equal to the total inhibitory neurons")
 print_range_bar(inhib_transplant_sum_sum, inhibitory_neuron_dens_litt - inhibitory_neuron_dens_litt, inhibitory_neuron_dens_litt + inhibitory_neuron_dens_tolerance)
 assertion_message = "sum of inhibitory ME-type neuron densities after transplant out of literature range"
-z_score_assertion(inhib_transplant_sum_sum, inhibitory_neuron_dens_litt - inhibitory_neuron_dens_litt, inhibitory_neuron_dens_litt + inhibitory_neuron_dens_tolerance, assertion_message)
+z_score_assertion_after_transplant(inhib_transplant_sum_sum, inhibitory_neuron_dens_litt - inhibitory_neuron_dens_litt, inhibitory_neuron_dens_litt + inhibitory_neuron_dens_tolerance, assertion_message)
 
 # Assertion on total sum of glia density subtypes
 sum_glia = astrocyte + microglia + oligodendrocyte
