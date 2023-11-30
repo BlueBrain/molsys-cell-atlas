@@ -1,5 +1,4 @@
 # Literature values setting
-import numpy as np
 
 # # Literature values and initialization of paramters (to be moved into a configuration file)
 voxel_volume = (25 * 1.0e-3)**3
