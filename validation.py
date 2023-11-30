@@ -50,7 +50,7 @@ def parse_args(args):
         dest="density_folder",
         required=False,
         metavar="<DIRECTORY PATH>",
-        help="The folder where to find the density files calculated")
+        help="The folder where to find the density files calculated for neuron, glia, microglia, oligodensdrocyte and astrocyte")
 
     parser.add_argument(
         "--cell_density",
@@ -237,9 +237,8 @@ def z_score_assertion_after_transplant(value = 0, min_value = 0, max_value = 0, 
 # Load files and perform assertions
 
 def main():
-    """Main entry point allowing external calls
-    Args:
-      args ([str]): command line parameter list
+    """
+    Main entry point allowing external calls
     """
 
     # Parse args
@@ -937,8 +936,8 @@ def main():
         z_score_assertion_sub_regions(MOB_glia_dens_sum, MOB_glia_dens_litt - MOB_glia_dens_tolerance, MOB_glia_dens_litt + MOB_glia_dens_tolerance, assertion_message)
 
 
-    print("\n\n==================================")
-    print("\nAll assertions successfully tested")
+    print("\n==================================")
+    print("All assertions successfully tested")
 
     return
 
