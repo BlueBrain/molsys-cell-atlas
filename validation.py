@@ -46,8 +46,8 @@ def parse_args(args):
         help="The hierarchy JSON file, sometimes called 1.json")
 
     parser.add_argument(
-        "--density_folder",
-        dest="density_folder",
+        "--neuron_glia_density_folder",
+        dest="neuron_glia_density_folder",
         required=False,
         metavar="<DIRECTORY PATH>",
         help="The folder where to find the density files calculated for neuron, glia, microglia, oligodensdrocyte and astrocyte")
@@ -280,14 +280,14 @@ def main():
         z_score_assertion(cell_dens, cell_dens_litt - cell_dens_tolerance, cell_dens_litt + cell_dens_tolerance, assertion_message)
 
 
-    if args.density_folder is not None:
+    if args.neuron_glia_density_folder is not None:
 
         # Reading the input files
-        neuron = VoxelData.load_nrrd(os.path.join(args.density_folder, "neuron_density.nrrd")).raw
-        glia = VoxelData.load_nrrd(os.path.join(args.density_folder, "glia_density.nrrd")).raw
-        astrocyte = VoxelData.load_nrrd(os.path.join(args.density_folder, "astrocyte_density.nrrd")).raw
-        microglia = VoxelData.load_nrrd(os.path.join(args.density_folder, "microglia_density.nrrd")).raw
-        oligodendrocyte = VoxelData.load_nrrd(os.path.join(args.density_folder, "oligodendrocyte_density.nrrd")).raw
+        neuron = VoxelData.load_nrrd(os.path.join(args.neuron_glia_density_folder, "neuron_density.nrrd")).raw
+        glia = VoxelData.load_nrrd(os.path.join(args.neuron_glia_density_folder, "glia_density.nrrd")).raw
+        astrocyte = VoxelData.load_nrrd(os.path.join(args.neuron_glia_density_folder, "astrocyte_density.nrrd")).raw
+        microglia = VoxelData.load_nrrd(os.path.join(args.neuron_glia_density_folder, "microglia_density.nrrd")).raw
+        oligodendrocyte = VoxelData.load_nrrd(os.path.join(args.neuron_glia_density_folder, "oligodendrocyte_density.nrrd")).raw
 
         # Assertion on total neuron densities
         neuron_dens = np.sum(neuron) / whole_brain_annotation_dens # * voxel_volume
@@ -490,7 +490,7 @@ def main():
         z_score_assertion_after_transplant(inhib_transplant_sum_sum, inhibitory_neuron_dens_litt - inhibitory_neuron_dens_litt, inhibitory_neuron_dens_litt + inhibitory_neuron_dens_tolerance, assertion_message)
 
 
-    if args.density_folder is not None and args.cell_density is not None:
+    if args.neuron_glia_density_folder is not None and args.cell_density is not None:
 
         # 2.2 Assertion on sub regions densities
         print("\n\n==================================================")
@@ -871,7 +871,7 @@ def main():
         assertion_message = "VPL neuron densities out of literature range"
         z_score_assertion_sub_regions(VPL_neuron_dens_sum, VPL_neuron_dens_litt - VPL_neuron_dens_tolerance, VPL_neuron_dens_litt + VPL_neuron_dens_tolerance, assertion_message)
 
-    if args.inhibitory_density_folder is not None:
+    if args.inhibitory_neuron_glia_density_folder is not None:
 
         # Assertion on VPL pv densities
         VPL_pv_dens = pv[np.isin(annotation, list(VPL))]
@@ -940,10 +940,5 @@ def main():
     print("All assertions successfully tested")
 
     return
-
-
-
-
-
 
 # =============================================================================================
