@@ -259,11 +259,11 @@ def main():
 
         # Assertion on the total volumetry of the annotation
         whole_brain_annotation_dens = len(np.where(annotation != 0)[0])
-        annotation_dens_diff = abs(wh_mouse_brain_vol_litt_m - whole_brain_annotation_dens)
+        annotation_dens_diff = abs(wh_mouse_brain_vol_n_litt - whole_brain_annotation_dens)
         print("\nAssertion on total annotation volumetry (mm^3)")
-        print_range_bar(whole_brain_annotation_dens, wh_mouse_brain_vol_litt_m - wh_mouse_brain_vol_tolerance_m, wh_mouse_brain_vol_litt_m + wh_mouse_brain_vol_tolerance_m)
+        print_range_bar(whole_brain_annotation_dens, wh_mouse_brain_vol_n_litt - wh_mouse_brain_vol_n_tolerance, wh_mouse_brain_vol_n_litt + wh_mouse_brain_vol_n_tolerance)
         assertion_message = "total annotation volumetry out of literature range"
-        z_score_assertion(whole_brain_annotation_dens, wh_mouse_brain_vol_litt_m - wh_mouse_brain_vol_tolerance_m, wh_mouse_brain_vol_litt_m + wh_mouse_brain_vol_tolerance_m, assertion_message)
+        z_score_assertion(whole_brain_annotation_dens, wh_mouse_brain_vol_n_litt - wh_mouse_brain_vol_n_tolerance, wh_mouse_brain_vol_n_litt + wh_mouse_brain_vol_n_tolerance, assertion_message)
 
 
     if args.cell_density is not None:
