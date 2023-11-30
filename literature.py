@@ -16,10 +16,10 @@ default_glia_proportion = 0.20 # Default glia density tolerance inheritated from
 default_cell_proportion = 0.18 # Default cell density tolerance inheritated from total cell tolerance when no data is available
 
 # Literature values for the whole brain
-wh_mouse_brain_vol_litt_m = 32570240 # = 508.91 mm^3 in Badea et al., 2007
-wh_mouse_brain_vol_tolerance_m = 1498880 # = 23.42 mm^3 (5%) in Badea et al., 2007
 wh_mouse_brain_vol_litt = 508.91 # = 508.91 mm^3 in Badea et al., 2007
 wh_mouse_brain_vol_tolerance = 23.42 # = 23.42 mm^3 (5%) in Badea et al., 2007
+wh_mouse_brain_vol_n_litt = int(wh_mouse_brain_vol_litt/voxel_volume) # = 508.91 mm^3 (count) in Badea et al., 2007
+wh_mouse_brain_vol_n_tolerance = int(wh_mouse_brain_vol_tolerance/voxel_volume) # = 23.42 mm^3 (5%) (count) in Badea et al., 2007
 neuron_dens_fiber_tracts_litt = 0 # Rodarie et al., 2022
 neuron_dens_fiber_tracts_tolerance = 0 # Rodarie et al., 2022
 neuron_dens_litt = 71760000/wh_mouse_brain_vol_litt # = 67,870,000 + 3,890,000 Table 1 in Herculano-Houzel et al., 2011
