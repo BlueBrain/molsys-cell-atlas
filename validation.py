@@ -64,35 +64,35 @@ def parse_args(args):
         dest="inhibitory_density_folder",
         required=False,
         metavar="<DIRECTORY PATH>",
-        help="The folder where to find all the inhibitory density files")
+        help="The folder where to find all the inhibitory density files gad67, pv, sst and vip")
 
     parser.add_argument(
         "--excitatory_ME_types_folder",
         dest="excitatory_ME_types_folder",
         required=False,
         metavar="<DIRECTORY PATH>",
-        help="The folder where to find all the excitatory density files")
+        help="The folder where to find all the excitatory split ME-types density files")
 
     parser.add_argument(
         "--inhibitory_ME_types_folder",
         dest="inhibitory_ME_types_folder",
         required=False,
         metavar="<DIRECTORY PATH>",
-        help="The folder where to find all the inhibitory ME-types density files")
+        help="The folder where to find all the inhibitory split ME-types density files")
 
     parser.add_argument(
         "--excitatory_ME_types_transplant_folder",
         dest="excitatory_ME_types_transplant_folder",
         required=False,
         metavar="<DIRECTORY PATH>",
-        help="The folder where to find all the excitatory ME-types density files after transplant")
+        help="The folder where to find all the excitatory split ME-types density files after transplant")
 
     parser.add_argument(
         "--inhibitory_ME_types_transplant_folder",
         dest="inhibitory_ME_types_transplant_folder",
         required=False,
         metavar="<DIRECTORY PATH>",
-        help="The folder where to find all the inhibitory ME-types density files after transplant")
+        help="The folder where to find all the inhibitory split ME-types density files after transplant")
 
     return parser.parse_args(args)
 
