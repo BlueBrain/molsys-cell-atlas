@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 from setuptools import setup, find_packages
-
 setup(
-    name="densities_validation",
+    name="densities-validation",
     author="Blue Brain Project, EPFL",
     setup_requires=["setuptools_scm"],
     use_scm_version=True,
@@ -19,6 +18,6 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     entry_points={
-        "console_scripts": ["densities_validation=validation:main"]
+        "console_scripts": ["densities-validation=validation:main"]
     },
 )
