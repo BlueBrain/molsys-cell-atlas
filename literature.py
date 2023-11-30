@@ -1,7 +1,7 @@
 # Literature values setting
 
-# # Literature values and initialization of paramters (to be moved into a configuration file)
-voxel_volume = (25 * 1.0e-3)**3
+# Literature values and initialization of paramters
+voxel_volume = (25 * 1.0e-3)**3 # mm^3 
 nb_voxels_ccfv2_2011 = 31984720 # 499.8 mm^3
 nb_voxels_ccfv2_2015 = 31992356 # = 499.9 mm^3
 nb_voxels_ccfv2_2015_fiber_tracts = 3525860 # = 55.1 mm^3
@@ -15,7 +15,7 @@ default_neuron_proportion = 0.16 # Default neuron density tolerance inheritated 
 default_glia_proportion = 0.20 # Default glia density tolerance inheritated from total glia tolerance when no data is available
 default_cell_proportion = 0.18 # Default cell density tolerance inheritated from total cell tolerance when no data is available
 
-# Literature values for the whole brain (to be moved into a configuration file)
+# Literature values for the whole brain
 wh_mouse_brain_vol_litt_m = 32570240 # = 508.91 mm^3 in Badea et al., 2007
 wh_mouse_brain_vol_tolerance_m = 1498880 # = 23.42 mm^3 (5%) in Badea et al., 2007
 wh_mouse_brain_vol_litt = 508.91 # = 508.91 mm^3 in Badea et al., 2007
