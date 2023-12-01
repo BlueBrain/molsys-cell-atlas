@@ -1,0 +1,34 @@
+default:
+  image: python:3.9
+
+include:
+  - project: nse/ci
+    file:
+      - /ci/lib/common.yml
+      - /ci/jobs/build-package.yml
+      - /ci/jobs/publish-package.yml
+
+stages:
+  - unit-test
+  - build
+  - publish
+
+unit_test:
+  stage: unit-test
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  before_script:
+    - pip install .
+  script:
+    - export PYTHONPATH=.:$PYTHONPATH
+    - densities-validation --hierarchy tests/1.json --annotation tests/annotation_ccfv2_25.nrrd
+  variables:
+    KUBERNETES_MEMORY_LIMIT: 8Gi
+    KUBERNETES_MEMORY_REQUEST: 8Gi
+
+build-package:
+  rules:
+    - when: on_success
+publish-package:
+  rules:
+    - if: $CI_COMMIT_TAG
