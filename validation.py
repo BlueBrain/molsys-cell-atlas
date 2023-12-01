@@ -871,7 +871,7 @@ def main():
         assertion_message = "VPL neuron densities out of literature range"
         z_score_assertion_sub_regions(VPL_neuron_dens_sum, VPL_neuron_dens_lit - VPL_neuron_dens_tolerance, VPL_neuron_dens_lit + VPL_neuron_dens_tolerance, assertion_message)
 
-    if args.inhibitory_neuron_glia_density_folder is not None:
+    if args.inhibitory_density_folder is not None:
 
         # Assertion on VPL pv densities
         VPL_pv_dens = pv[np.isin(annotation, list(VPL))]
