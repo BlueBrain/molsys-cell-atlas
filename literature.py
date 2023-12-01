@@ -18,8 +18,8 @@ default_cell_proportion = 0.18 # Default cell density tolerance inheritated from
 # Literature values for the whole brain
 wh_mouse_brain_vol_lit = 508.91 # = 508.91 mm^3 in Badea et al., 2007
 wh_mouse_brain_vol_tolerance = 23.42 # = 23.42 mm^3 (5%) in Badea et al., 2007
-wh_mouse_brain_vol_nb_vox_lit= int(wh_mouse_brain_vol_lit/voxel_volume) # = 508.91 mm^3 (count) in Badea et al., 2007
-wh_mouse_brain_vol_nb_vox_tolerance = int(wh_mouse_brain_vol_tolerance/voxel_volume) # = 23.42 mm^3 (5%) (count) in Badea et al., 2007
+wh_mouse_brain_nb_vox_lit= int(wh_mouse_brain_vol_lit/voxel_volume) # = 508.91 mm^3 (count) in Badea et al., 2007
+wh_mouse_brain_nb_vox_tolerance = int(wh_mouse_brain_vol_tolerance/voxel_volume) # = 23.42 mm^3 (5%) (count) in Badea et al., 2007
 neuron_dens_fiber_tracts_lit = 0 # Rodarie et al., 2022
 neuron_dens_fiber_tracts_tolerance = 0 # Rodarie et al., 2022
 neuron_dens_lit = 71760000/wh_mouse_brain_vol_lit # = 67,870,000 + 3,890,000 Table 1 in Herculano-Houzel et al., 2011
