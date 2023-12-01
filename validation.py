@@ -299,7 +299,7 @@ def main():
 
         # Assertion on total glia densities
         glia_dens = np.sum(glia) / whole_brain_annotation_dens # * voxel_volume
-        glia_dens_diff = abs(glia_dens_lit - glia_dens
+        glia_dens_diff = abs(glia_dens_lit - glia_dens)
         print("\nAssertion on total glia densities (/mm^3)")
         print_range_bar(glia_dens, glia_dens_lit - glia_dens_tolerance, glia_dens_lit + glia_dens_tolerance)
         assertion_message = "total glia densities out of literature range"
