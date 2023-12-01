@@ -192,11 +192,6 @@ def main():
     # Parse args
     args = parse_args(sys.argv[1:])
 
-    # Region filters
-    print("\nRegion filters setting")
-    region_map = RegionMap.load_json(args.hierarchy_json)
-
-
     # 2.1/ Assertion on whole brain volumetry and densities
     print("Assertion on whole brain volumetry and densities...")
 
@@ -421,12 +416,15 @@ def main():
         z_score_assertion(inhib_transplant_sum_sum, inhibitory_neuron_dens_lit - inhibitory_neuron_dens_lit, inhibitory_neuron_dens_lit + inhibitory_neuron_dens_tolerance, assertion_message, 1)
 
 
-    if args.neuron_glia_density_folder is not None and args.cell_density is not None:
+    if args.hierarchy_json:
 
         # 2.2 Assertion on sub regions densities
         print("\n\n==================================================")
         print("\nAssertion on sub-region densities...")
 
+        # Region filters
+        print("\nRegion filters setting")
+        region_map = RegionMap.load_json(args.hierarchy_json)
 
         # Brain region filters
 
@@ -509,330 +507,331 @@ def main():
         isocortex_microglia_dens_tolerance = round(isocortex_microglia_dens_lit * default_glia_proportion) # default Not available /!\
 
 
+        if args.neuron_glia_density_folder is not None and args.cell_density is not None:
 
-        # Assertion on fiber tracks + grooves + ventricular_system where no neuron should be found
-        fiber_tracts_neuron = neuron[np.isin(annotation, list(fiber_tracts_ids))]
-        fiber_tracts_neuron_sum = np.sum(fiber_tracts_neuron) * voxel_volume
-        diff_fiber_tracts_neuron_sum = abs(neuron_dens_fiber_tracts_lit - fiber_tracts_neuron_sum)
-        print("\nAssertion on fiber tracks + grooves + ventricular_system where no neuron should be found")
-        if not diff_fiber_tracts_neuron_sum <= neuron_dens_fiber_tracts_tolerance:
-            warning_message = "fiber tracks + grooves + ventricular_system where no neuron should be found not consistent with literature"
-            warnings.warn(warning_message, UserWarning)
-            print("WARNING:", warning_message)
-        else:
-            print("Validated")
+            # Assertion on fiber tracks + grooves + ventricular_system where no neuron should be found
+            fiber_tracts_neuron = neuron[np.isin(annotation, list(fiber_tracts_ids))]
+            fiber_tracts_neuron_sum = np.sum(fiber_tracts_neuron) * voxel_volume
+            diff_fiber_tracts_neuron_sum = abs(neuron_dens_fiber_tracts_lit - fiber_tracts_neuron_sum)
+            print("\nAssertion on fiber tracks + grooves + ventricular_system where no neuron should be found")
+            if not diff_fiber_tracts_neuron_sum <= neuron_dens_fiber_tracts_tolerance:
+                warning_message = "fiber tracks + grooves + ventricular_system where no neuron should be found not consistent with literature"
+                warnings.warn(warning_message, UserWarning)
+                print("WARNING:", warning_message)
+            else:
+                print("Validated")
 
-        # ---------------------------------------------------------------------------------------------
-        # ISOCORTEX
-        print("\n\n----------ISOCORTEX----------")
+            # ---------------------------------------------------------------------------------------------
+            # ISOCORTEX
+            print("\n\n----------ISOCORTEX----------")
 
-        # Assertion on isocortex cell densities
-        isocortex_cell_dens = cell[np.isin(annotation, list(isocortex))]
-        isocortex_cell_dens_sum = np.sum(isocortex_cell_dens) / isocortex_nb_vox # * voxel_volume
-        print("\nAssertion on isocortex cell densities (/mm^3)")
-        print_range_bar(isocortex_cell_dens_sum, isocortex_cell_dens_lit - isocortex_cell_dens_tolerance, isocortex_cell_dens_lit + isocortex_cell_dens_tolerance)
-        assertion_message = "isocortex cell densities out of literature range"
-        z_score_assertion(isocortex_cell_dens_sum, isocortex_cell_dens_lit - isocortex_cell_dens_tolerance, isocortex_cell_dens_lit + isocortex_cell_dens_tolerance, assertion_message)
+            # Assertion on isocortex cell densities
+            isocortex_cell_dens = cell[np.isin(annotation, list(isocortex))]
+            isocortex_cell_dens_sum = np.sum(isocortex_cell_dens) / isocortex_nb_vox # * voxel_volume
+            print("\nAssertion on isocortex cell densities (/mm^3)")
+            print_range_bar(isocortex_cell_dens_sum, isocortex_cell_dens_lit - isocortex_cell_dens_tolerance, isocortex_cell_dens_lit + isocortex_cell_dens_tolerance)
+            assertion_message = "isocortex cell densities out of literature range"
+            z_score_assertion(isocortex_cell_dens_sum, isocortex_cell_dens_lit - isocortex_cell_dens_tolerance, isocortex_cell_dens_lit + isocortex_cell_dens_tolerance, assertion_message)
 
-        # Assertion on isocortex neuron densities
-        isocortex_neuron_dens = neuron[np.isin(annotation, list(isocortex))]
-        isocortex_neuron_dens_sum = np.sum(isocortex_neuron_dens) / isocortex_nb_vox # * voxel_volume
-        print("\nAssertion on isocortex neuron densities (/mm^3)")
-        print("/!\ Tolerance set to default for neuron density")
-        isocortex_neuron_dens_default_tolerance = isocortex_neuron_dens_lit * default_neuron_proportion
-        print_range_bar(isocortex_neuron_dens_sum, isocortex_neuron_dens_lit - isocortex_neuron_dens_default_tolerance, isocortex_neuron_dens_lit + isocortex_neuron_dens_default_tolerance)
-        assertion_message = "isocortex neuron densities out of literature range"
-        z_score_assertion(isocortex_neuron_dens_sum, isocortex_neuron_dens_lit - isocortex_neuron_dens_default_tolerance, isocortex_neuron_dens_lit + isocortex_neuron_dens_default_tolerance, assertion_message)
+            # Assertion on isocortex neuron densities
+            isocortex_neuron_dens = neuron[np.isin(annotation, list(isocortex))]
+            isocortex_neuron_dens_sum = np.sum(isocortex_neuron_dens) / isocortex_nb_vox # * voxel_volume
+            print("\nAssertion on isocortex neuron densities (/mm^3)")
+            print("/!\ Tolerance set to default for neuron density")
+            isocortex_neuron_dens_default_tolerance = isocortex_neuron_dens_lit * default_neuron_proportion
+            print_range_bar(isocortex_neuron_dens_sum, isocortex_neuron_dens_lit - isocortex_neuron_dens_default_tolerance, isocortex_neuron_dens_lit + isocortex_neuron_dens_default_tolerance)
+            assertion_message = "isocortex neuron densities out of literature range"
+            z_score_assertion(isocortex_neuron_dens_sum, isocortex_neuron_dens_lit - isocortex_neuron_dens_default_tolerance, isocortex_neuron_dens_lit + isocortex_neuron_dens_default_tolerance, assertion_message)
 
-        # Assertion on isocortex glia densities
-        isocortex_glia_dens = glia[np.isin(annotation, list(isocortex))]
-        isocortex_glia_dens_sum = np.sum(isocortex_glia_dens) / isocortex_nb_vox # * voxel_volume
-        print("\nAssertion on isocortex glia densities (/mm^3)")
-        print("/!\ Tolerance set to default for glia density")
-        isocortex_glia_dens_default_tolerance = isocortex_glia_dens_lit * default_glia_proportion
-        print_range_bar(isocortex_glia_dens_sum, isocortex_glia_dens_lit - isocortex_glia_dens_default_tolerance, isocortex_glia_dens_lit + isocortex_glia_dens_default_tolerance)
-        assertion_message = "isocortex glia densities out of literature range"
-        z_score_assertion(isocortex_glia_dens_sum, isocortex_glia_dens_lit - isocortex_glia_dens_default_tolerance, isocortex_glia_dens_lit + isocortex_glia_dens_default_tolerance, assertion_message)
+            # Assertion on isocortex glia densities
+            isocortex_glia_dens = glia[np.isin(annotation, list(isocortex))]
+            isocortex_glia_dens_sum = np.sum(isocortex_glia_dens) / isocortex_nb_vox # * voxel_volume
+            print("\nAssertion on isocortex glia densities (/mm^3)")
+            print("/!\ Tolerance set to default for glia density")
+            isocortex_glia_dens_default_tolerance = isocortex_glia_dens_lit * default_glia_proportion
+            print_range_bar(isocortex_glia_dens_sum, isocortex_glia_dens_lit - isocortex_glia_dens_default_tolerance, isocortex_glia_dens_lit + isocortex_glia_dens_default_tolerance)
+            assertion_message = "isocortex glia densities out of literature range"
+            z_score_assertion(isocortex_glia_dens_sum, isocortex_glia_dens_lit - isocortex_glia_dens_default_tolerance, isocortex_glia_dens_lit + isocortex_glia_dens_default_tolerance, assertion_message)
 
-        # Assertion on isocortex oligodendrocyte densities
-        isocortex_oligo_dens = oligodendrocyte[np.isin(annotation, list(isocortex))]
-        isocortex_oligo_dens_sum = np.sum(isocortex_oligo_dens) / isocortex_nb_vox # * voxel_volume
-        print("\nAssertion on isocortex oligodendrocyte densities (/mm^3)")
-        print("/!\ Literature figures not consistent + Tolerance not available, set by default")
-        print_range_bar(isocortex_oligo_dens_sum, isocortex_oligo_dens_lit - isocortex_oligo_dens_tolerance, isocortex_oligo_dens_lit + isocortex_oligo_dens_tolerance)
-        assertion_message = "isocortex oligodendrocyte densities out of literature range"
-        z_score_assertion(isocortex_oligo_dens_sum, isocortex_oligo_dens_lit - isocortex_oligo_dens_tolerance, isocortex_oligo_dens_lit + isocortex_oligo_dens_tolerance, assertion_message)
+            # Assertion on isocortex oligodendrocyte densities
+            isocortex_oligo_dens = oligodendrocyte[np.isin(annotation, list(isocortex))]
+            isocortex_oligo_dens_sum = np.sum(isocortex_oligo_dens) / isocortex_nb_vox # * voxel_volume
+            print("\nAssertion on isocortex oligodendrocyte densities (/mm^3)")
+            print("/!\ Literature figures not consistent + Tolerance not available, set by default")
+            print_range_bar(isocortex_oligo_dens_sum, isocortex_oligo_dens_lit - isocortex_oligo_dens_tolerance, isocortex_oligo_dens_lit + isocortex_oligo_dens_tolerance)
+            assertion_message = "isocortex oligodendrocyte densities out of literature range"
+            z_score_assertion(isocortex_oligo_dens_sum, isocortex_oligo_dens_lit - isocortex_oligo_dens_tolerance, isocortex_oligo_dens_lit + isocortex_oligo_dens_tolerance, assertion_message)
 
-        # Assertion on isocortex astrocyte densities
-        isocortex_astro_dens = astrocyte[np.isin(annotation, list(isocortex))]
-        isocortex_astro_dens_sum = np.sum(isocortex_astro_dens) / isocortex_nb_vox # * voxel_volume
-        print("\nAssertion on isocortex astrocyte densities (/mm^3)")
-        print("/!\ Literature figures not consistent + Tolerance not available, set by default")
-        print_range_bar(isocortex_astro_dens_sum, isocortex_astro_dens_lit - isocortex_astro_dens_tolerance, isocortex_astro_dens_lit + isocortex_astro_dens_tolerance)
-        assertion_message = "isocortex astrocyte densities out of literature range"
-        z_score_assertion(isocortex_astro_dens_sum, isocortex_astro_dens_lit - isocortex_astro_dens_tolerance, isocortex_astro_dens_lit + isocortex_astro_dens_tolerance, assertion_message)
+            # Assertion on isocortex astrocyte densities
+            isocortex_astro_dens = astrocyte[np.isin(annotation, list(isocortex))]
+            isocortex_astro_dens_sum = np.sum(isocortex_astro_dens) / isocortex_nb_vox # * voxel_volume
+            print("\nAssertion on isocortex astrocyte densities (/mm^3)")
+            print("/!\ Literature figures not consistent + Tolerance not available, set by default")
+            print_range_bar(isocortex_astro_dens_sum, isocortex_astro_dens_lit - isocortex_astro_dens_tolerance, isocortex_astro_dens_lit + isocortex_astro_dens_tolerance)
+            assertion_message = "isocortex astrocyte densities out of literature range"
+            z_score_assertion(isocortex_astro_dens_sum, isocortex_astro_dens_lit - isocortex_astro_dens_tolerance, isocortex_astro_dens_lit + isocortex_astro_dens_tolerance, assertion_message)
 
-        # Assertion on isocortex microglia densities
-        isocortex_microglia_dens = microglia[np.isin(annotation, list(isocortex))]
-        isocortex_microglia_dens_sum = np.sum(isocortex_microglia_dens) / isocortex_nb_vox # * voxel_volume
-        print("\nAssertion on isocortex microglia densities (/mm^3)")
-        print("/!\ Literature figures not consistent + Tolerance not available, set by default")
-        print_range_bar(isocortex_microglia_dens_sum, isocortex_microglia_dens_lit - isocortex_microglia_dens_tolerance, isocortex_microglia_dens_lit + isocortex_microglia_dens_tolerance)
-        assertion_message = "isocortex microglia densities out of literature range"
-        z_score_assertion(isocortex_microglia_dens_sum, isocortex_microglia_dens_lit - isocortex_microglia_dens_tolerance, isocortex_microglia_dens_lit + isocortex_microglia_dens_tolerance, assertion_message)
+            # Assertion on isocortex microglia densities
+            isocortex_microglia_dens = microglia[np.isin(annotation, list(isocortex))]
+            isocortex_microglia_dens_sum = np.sum(isocortex_microglia_dens) / isocortex_nb_vox # * voxel_volume
+            print("\nAssertion on isocortex microglia densities (/mm^3)")
+            print("/!\ Literature figures not consistent + Tolerance not available, set by default")
+            print_range_bar(isocortex_microglia_dens_sum, isocortex_microglia_dens_lit - isocortex_microglia_dens_tolerance, isocortex_microglia_dens_lit + isocortex_microglia_dens_tolerance)
+            assertion_message = "isocortex microglia densities out of literature range"
+            z_score_assertion(isocortex_microglia_dens_sum, isocortex_microglia_dens_lit - isocortex_microglia_dens_tolerance, isocortex_microglia_dens_lit + isocortex_microglia_dens_tolerance, assertion_message)
 
-        # ---------------------------------------------------------------------------------------------
-
-
-        # ---------------------------------------------------------------------------------------------
-        # CEREBELLUM
-        print("\n\n----------CEREBELLUM----------")
-
-        # Assertion on cerebellum cell densities
-        cerebellum_nb_vox = len(np.where(np.isin(annotation, list(cerebellum)) != 0)[0])
-        cerebellum_cell_dens = cell[np.isin(annotation, list(cerebellum))]
-        cerebellum_cell_dens_sum = np.sum(cerebellum_cell_dens) / cerebellum_nb_vox # * voxel_volume
-        print("\nAssertion on cerebellum cell densities (/mm^3)")
-        print_range_bar(cerebellum_cell_dens_sum, cerebellum_cell_dens_lit - cerebellum_cell_dens_tolerance, cerebellum_cell_dens_lit + cerebellum_cell_dens_tolerance)
-        assertion_message = "cerebellum cell densities out of literature range"
-        z_score_assertion(cerebellum_cell_dens_sum, cerebellum_cell_dens_lit - cerebellum_cell_dens_tolerance, cerebellum_cell_dens_lit + cerebellum_cell_dens_tolerance, assertion_message)
-
-        # Assertion on cerebellum neuron densities
-        cerebellum_neuron_dens = neuron[np.isin(annotation, list(cerebellum))]
-        cerebellum_neuron_dens_sum = np.sum(cerebellum_neuron_dens) / cerebellum_nb_vox # * voxel_volume
-        print("\nAssertion on cerebellum neuron densities (/mm^3)")
-        print_range_bar(cerebellum_neuron_dens_sum, cerebellum_neuron_dens_lit - cerebellum_neuron_dens_tolerance, cerebellum_neuron_dens_lit + cerebellum_neuron_dens_tolerance)
-        assertion_message = "cerebellum neuron densities out of literature range"
-        z_score_assertion(cerebellum_neuron_dens_sum, cerebellum_neuron_dens_lit - cerebellum_neuron_dens_tolerance, cerebellum_neuron_dens_lit + cerebellum_neuron_dens_tolerance, assertion_message)
-
-        # Assertion on cerebellum glia densities
-        cerebellum_glia_dens = glia[np.isin(annotation, list(cerebellum))]
-        cerebellum_glia_dens_sum = np.sum(cerebellum_glia_dens) / cerebellum_nb_vox # * voxel_volume
-        print("\nAssertion on cerebellum glia densities (/mm^3)")
-        print_range_bar(cerebellum_glia_dens_sum, cerebellum_glia_dens_lit - cerebellum_glia_dens_tolerance, cerebellum_glia_dens_lit + cerebellum_glia_dens_tolerance)
-        assertion_message = "cerebellum glia densities out of literature range"
-        z_score_assertion(cerebellum_glia_dens_sum, cerebellum_glia_dens_lit - cerebellum_glia_dens_tolerance, cerebellum_glia_dens_lit + cerebellum_glia_dens_tolerance, assertion_message)
-
-        # Assertion on cerebellum oligodendrocyte densities
-        cerebellum_oligo_dens = oligodendrocyte[np.isin(annotation, list(cerebellum))]
-        cerebellum_oligo_dens_sum = np.sum(cerebellum_oligo_dens) / cerebellum_nb_vox # * voxel_volume
-        print("\nAssertion on cerebellum oligodendrocyte densities (/mm^3)")
-        print("/!\ Literature figures not consistent")
-        print_range_bar(cerebellum_oligo_dens_sum, cerebellum_oligo_dens_lit - cerebellum_oligo_dens_tolerance, cerebellum_oligo_dens_lit + cerebellum_oligo_dens_tolerance)
-        assertion_message = "cerebellum oligodendrocyte densities out of literature range"
-        z_score_assertion(cerebellum_oligo_dens_sum, cerebellum_oligo_dens_lit - cerebellum_oligo_dens_tolerance, cerebellum_oligo_dens_lit + cerebellum_oligo_dens_tolerance, assertion_message)
-
-        # Assertion on cerebellum astrocyte densities
-        cerebellum_astro_dens = astrocyte[np.isin(annotation, list(cerebellum))]
-        cerebellum_astro_dens_sum = np.sum(cerebellum_astro_dens) / cerebellum_nb_vox # * voxel_volume
-        print("\nAssertion on cerebellum astrocyte densities (/mm^3)")
-        print("/!\ Literature figures not consistent + Tolerance not available, set by default")
-        print_range_bar(cerebellum_astro_dens_sum, cerebellum_astro_dens_lit - cerebellum_astro_dens_tolerance, cerebellum_astro_dens_lit + cerebellum_astro_dens_tolerance)
-        assertion_message = "cerebellum astrocyte densities out of literature range"
-        z_score_assertion(cerebellum_astro_dens_sum, cerebellum_astro_dens_lit - cerebellum_astro_dens_tolerance, cerebellum_astro_dens_lit + cerebellum_astro_dens_tolerance, assertion_message)
-
-        # Assertion on cerebellum microglia densities
-        cerebellum_microglia_dens = microglia[np.isin(annotation, list(cerebellum))]
-        cerebellum_microglia_dens_sum = np.sum(cerebellum_microglia_dens) / cerebellum_nb_vox # * voxel_volume
-        print("\nAssertion on cerebellum microglia densities (/mm^3)")
-        print("/!\ Literature figures not consistent")
-        print_range_bar(cerebellum_microglia_dens_sum, cerebellum_microglia_dens_lit - cerebellum_microglia_dens_tolerance, cerebellum_microglia_dens_lit + cerebellum_microglia_dens_tolerance)
-        assertion_message = "cerebellum microglia densities out of literature range"
-        z_score_assertion(cerebellum_microglia_dens_sum, cerebellum_microglia_dens_lit - cerebellum_microglia_dens_tolerance, cerebellum_microglia_dens_lit + cerebellum_microglia_dens_tolerance, assertion_message)
-
-        # ---------------------------------------------------------------------------------------------
+            # ---------------------------------------------------------------------------------------------
 
 
+            # ---------------------------------------------------------------------------------------------
+            # CEREBELLUM
+            print("\n\n----------CEREBELLUM----------")
 
-        # ---------------------------------------------------------------------------------------------
-        # STRIATUM
+            # Assertion on cerebellum cell densities
+            cerebellum_nb_vox = len(np.where(np.isin(annotation, list(cerebellum)) != 0)[0])
+            cerebellum_cell_dens = cell[np.isin(annotation, list(cerebellum))]
+            cerebellum_cell_dens_sum = np.sum(cerebellum_cell_dens) / cerebellum_nb_vox # * voxel_volume
+            print("\nAssertion on cerebellum cell densities (/mm^3)")
+            print_range_bar(cerebellum_cell_dens_sum, cerebellum_cell_dens_lit - cerebellum_cell_dens_tolerance, cerebellum_cell_dens_lit + cerebellum_cell_dens_tolerance)
+            assertion_message = "cerebellum cell densities out of literature range"
+            z_score_assertion(cerebellum_cell_dens_sum, cerebellum_cell_dens_lit - cerebellum_cell_dens_tolerance, cerebellum_cell_dens_lit + cerebellum_cell_dens_tolerance, assertion_message)
 
-        print("\n\n----------STRIATUM----------")
+            # Assertion on cerebellum neuron densities
+            cerebellum_neuron_dens = neuron[np.isin(annotation, list(cerebellum))]
+            cerebellum_neuron_dens_sum = np.sum(cerebellum_neuron_dens) / cerebellum_nb_vox # * voxel_volume
+            print("\nAssertion on cerebellum neuron densities (/mm^3)")
+            print_range_bar(cerebellum_neuron_dens_sum, cerebellum_neuron_dens_lit - cerebellum_neuron_dens_tolerance, cerebellum_neuron_dens_lit + cerebellum_neuron_dens_tolerance)
+            assertion_message = "cerebellum neuron densities out of literature range"
+            z_score_assertion(cerebellum_neuron_dens_sum, cerebellum_neuron_dens_lit - cerebellum_neuron_dens_tolerance, cerebellum_neuron_dens_lit + cerebellum_neuron_dens_tolerance, assertion_message)
 
-        # Assertion on striatum neuron densities
-        striatum_neuron_dens = neuron[np.isin(annotation, list(striatum))]
-        striatum_neuron_dens_sum = np.sum(striatum_neuron_dens) / striatum_nb_vox # * voxel_volume
-        print("\nAssertion on striatum neuron densities (/mm^3)")
-        print_range_bar(striatum_neuron_dens_sum, striatum_neuron_dens_lit - striatum_neuron_dens_tolerance, striatum_neuron_dens_lit + striatum_neuron_dens_tolerance)
-        assertion_message = "striatum neuron densities out of literature range"
-        z_score_assertion(striatum_neuron_dens_sum, striatum_neuron_dens_lit - striatum_neuron_dens_tolerance, striatum_neuron_dens_lit + striatum_neuron_dens_tolerance, assertion_message)
+            # Assertion on cerebellum glia densities
+            cerebellum_glia_dens = glia[np.isin(annotation, list(cerebellum))]
+            cerebellum_glia_dens_sum = np.sum(cerebellum_glia_dens) / cerebellum_nb_vox # * voxel_volume
+            print("\nAssertion on cerebellum glia densities (/mm^3)")
+            print_range_bar(cerebellum_glia_dens_sum, cerebellum_glia_dens_lit - cerebellum_glia_dens_tolerance, cerebellum_glia_dens_lit + cerebellum_glia_dens_tolerance)
+            assertion_message = "cerebellum glia densities out of literature range"
+            z_score_assertion(cerebellum_glia_dens_sum, cerebellum_glia_dens_lit - cerebellum_glia_dens_tolerance, cerebellum_glia_dens_lit + cerebellum_glia_dens_tolerance, assertion_message)
 
-        # Assertion on striatum oligodendrocyte densities
-        striatum_oligo_dens = oligodendrocyte[np.isin(annotation, list(striatum))]
-        striatum_oligo_dens_sum = np.sum(striatum_oligo_dens) / striatum_nb_vox # * voxel_volume
-        print("\nAssertion on striatum oligodendrocyte densities (/mm^3)")
-        print_range_bar(striatum_oligo_dens_sum, striatum_oligo_dens_lit - striatum_oligo_dens_tolerance, striatum_oligo_dens_lit + striatum_oligo_dens_tolerance)
-        assertion_message = "striatum oligodendrocyte densities out of literature range"
-        z_score_assertion(striatum_oligo_dens_sum, striatum_oligo_dens_lit - striatum_oligo_dens_tolerance, striatum_oligo_dens_lit + striatum_oligo_dens_tolerance, assertion_message)
+            # Assertion on cerebellum oligodendrocyte densities
+            cerebellum_oligo_dens = oligodendrocyte[np.isin(annotation, list(cerebellum))]
+            cerebellum_oligo_dens_sum = np.sum(cerebellum_oligo_dens) / cerebellum_nb_vox # * voxel_volume
+            print("\nAssertion on cerebellum oligodendrocyte densities (/mm^3)")
+            print("/!\ Literature figures not consistent")
+            print_range_bar(cerebellum_oligo_dens_sum, cerebellum_oligo_dens_lit - cerebellum_oligo_dens_tolerance, cerebellum_oligo_dens_lit + cerebellum_oligo_dens_tolerance)
+            assertion_message = "cerebellum oligodendrocyte densities out of literature range"
+            z_score_assertion(cerebellum_oligo_dens_sum, cerebellum_oligo_dens_lit - cerebellum_oligo_dens_tolerance, cerebellum_oligo_dens_lit + cerebellum_oligo_dens_tolerance, assertion_message)
 
-        # Assertion on striatum astrocyte densities
-        striatum_astro_dens = astrocyte[np.isin(annotation, list(striatum))]
-        striatum_astro_dens_sum = np.sum(striatum_astro_dens) / striatum_nb_vox # * voxel_volume
-        print("\nAssertion on striatum astrocyte densities (/mm^3)")
-        print_range_bar(striatum_astro_dens_sum, striatum_astro_dens_lit - striatum_astro_dens_tolerance, striatum_astro_dens_lit + striatum_astro_dens_tolerance)
-        assertion_message = "striatum astrocyte densities out of literature range"
-        z_score_assertion(striatum_astro_dens_sum, striatum_astro_dens_lit - striatum_astro_dens_tolerance, striatum_astro_dens_lit + striatum_astro_dens_tolerance, assertion_message)
+            # Assertion on cerebellum astrocyte densities
+            cerebellum_astro_dens = astrocyte[np.isin(annotation, list(cerebellum))]
+            cerebellum_astro_dens_sum = np.sum(cerebellum_astro_dens) / cerebellum_nb_vox # * voxel_volume
+            print("\nAssertion on cerebellum astrocyte densities (/mm^3)")
+            print("/!\ Literature figures not consistent + Tolerance not available, set by default")
+            print_range_bar(cerebellum_astro_dens_sum, cerebellum_astro_dens_lit - cerebellum_astro_dens_tolerance, cerebellum_astro_dens_lit + cerebellum_astro_dens_tolerance)
+            assertion_message = "cerebellum astrocyte densities out of literature range"
+            z_score_assertion(cerebellum_astro_dens_sum, cerebellum_astro_dens_lit - cerebellum_astro_dens_tolerance, cerebellum_astro_dens_lit + cerebellum_astro_dens_tolerance, assertion_message)
 
-        # Assertion on striatum microglia densities
-        striatum_microglia_dens = microglia[np.isin(annotation, list(striatum))]
-        striatum_microglia_dens_sum = np.sum(striatum_microglia_dens) / striatum_nb_vox # * voxel_volume
-        print("\nAssertion on striatum microglia densities (/mm^3)")
-        print_range_bar(striatum_microglia_dens_sum, striatum_microglia_dens_lit - striatum_microglia_dens_tolerance, striatum_microglia_dens_lit + striatum_microglia_dens_tolerance)
-        assertion_message = "striatum microglia densities out of literature range"
-        z_score_assertion(striatum_microglia_dens_sum, striatum_microglia_dens_lit - striatum_microglia_dens_tolerance, striatum_microglia_dens_lit + striatum_microglia_dens_tolerance, assertion_message)
+            # Assertion on cerebellum microglia densities
+            cerebellum_microglia_dens = microglia[np.isin(annotation, list(cerebellum))]
+            cerebellum_microglia_dens_sum = np.sum(cerebellum_microglia_dens) / cerebellum_nb_vox # * voxel_volume
+            print("\nAssertion on cerebellum microglia densities (/mm^3)")
+            print("/!\ Literature figures not consistent")
+            print_range_bar(cerebellum_microglia_dens_sum, cerebellum_microglia_dens_lit - cerebellum_microglia_dens_tolerance, cerebellum_microglia_dens_lit + cerebellum_microglia_dens_tolerance)
+            assertion_message = "cerebellum microglia densities out of literature range"
+            z_score_assertion(cerebellum_microglia_dens_sum, cerebellum_microglia_dens_lit - cerebellum_microglia_dens_tolerance, cerebellum_microglia_dens_lit + cerebellum_microglia_dens_tolerance, assertion_message)
 
-        # ---------------------------------------------------------------------------------------------
+            # ---------------------------------------------------------------------------------------------
 
 
 
-        # ---------------------------------------------------------------------------------------------
-        # HIPPOCAMPUS
+            # ---------------------------------------------------------------------------------------------
+            # STRIATUM
 
-        print("\n\n----------HIPPOCAMPUS----------")
+            print("\n\n----------STRIATUM----------")
 
-        # Assertion on hippocampus neuron densities
-        hippocampus_neuron_dens = neuron[np.isin(annotation, list(hippocampal_formation))]
-        hippocampus_neuron_dens_sum = np.sum(hippocampus_neuron_dens) / hippocampal_formation_nb_vox # * voxel_volume
-        print("\nAssertion on hippocampus neuron densities (/mm^3)")
-        print("/!\ Tolerance not available, set by default")
-        print_range_bar(hippocampus_neuron_dens_sum, hippocampus_neuron_dens_lit - hippocampus_neuron_dens_tolerance, hippocampus_neuron_dens_lit + hippocampus_neuron_dens_tolerance)
-        assertion_message = "hippocampus neuron densities out of literature range"
-        z_score_assertion(hippocampus_neuron_dens_sum, hippocampus_neuron_dens_lit - hippocampus_neuron_dens_tolerance, hippocampus_neuron_dens_lit + hippocampus_neuron_dens_tolerance, assertion_message)
+            # Assertion on striatum neuron densities
+            striatum_neuron_dens = neuron[np.isin(annotation, list(striatum))]
+            striatum_neuron_dens_sum = np.sum(striatum_neuron_dens) / striatum_nb_vox # * voxel_volume
+            print("\nAssertion on striatum neuron densities (/mm^3)")
+            print_range_bar(striatum_neuron_dens_sum, striatum_neuron_dens_lit - striatum_neuron_dens_tolerance, striatum_neuron_dens_lit + striatum_neuron_dens_tolerance)
+            assertion_message = "striatum neuron densities out of literature range"
+            z_score_assertion(striatum_neuron_dens_sum, striatum_neuron_dens_lit - striatum_neuron_dens_tolerance, striatum_neuron_dens_lit + striatum_neuron_dens_tolerance, assertion_message)
 
-        # Assertion on hippocampus oligodendrocyte densities
-        hippocampus_oligo_dens = oligodendrocyte[np.isin(annotation, list(hippocampus))]
-        hippocampus_oligo_dens_sum = np.sum(hippocampus_oligo_dens) / hippocampus_nb_vox # * voxel_volume
-        print("\nAssertion on hippocampus oligodendrocyte densities (/mm^3)")
-        print("/!\ Tolerance not available, set by default")
-        print_range_bar(hippocampus_oligo_dens_sum, hippocampus_oligo_dens_lit - hippocampus_oligo_dens_tolerance, hippocampus_oligo_dens_lit + hippocampus_oligo_dens_tolerance)
-        assertion_message = "hippocampus oligodendrocyte densities out of literature range"
-        z_score_assertion(hippocampus_oligo_dens_sum, hippocampus_oligo_dens_lit - hippocampus_oligo_dens_tolerance, hippocampus_oligo_dens_lit + hippocampus_oligo_dens_tolerance, assertion_message)
+            # Assertion on striatum oligodendrocyte densities
+            striatum_oligo_dens = oligodendrocyte[np.isin(annotation, list(striatum))]
+            striatum_oligo_dens_sum = np.sum(striatum_oligo_dens) / striatum_nb_vox # * voxel_volume
+            print("\nAssertion on striatum oligodendrocyte densities (/mm^3)")
+            print_range_bar(striatum_oligo_dens_sum, striatum_oligo_dens_lit - striatum_oligo_dens_tolerance, striatum_oligo_dens_lit + striatum_oligo_dens_tolerance)
+            assertion_message = "striatum oligodendrocyte densities out of literature range"
+            z_score_assertion(striatum_oligo_dens_sum, striatum_oligo_dens_lit - striatum_oligo_dens_tolerance, striatum_oligo_dens_lit + striatum_oligo_dens_tolerance, assertion_message)
 
-        # Assertion on hippocampus astrocyte densities
-        hippocampus_astro_dens = astrocyte[np.isin(annotation, list(hippocampus))]
-        hippocampus_astro_dens_sum = np.sum(hippocampus_astro_dens) / hippocampus_nb_vox # * voxel_volume
-        print("\nAssertion on hippocampus astrocyte densities (/mm^3)")
-        print_range_bar(hippocampus_astro_dens_sum, hippocampus_astro_dens_lit - hippocampus_astro_dens_tolerance, hippocampus_astro_dens_lit + hippocampus_astro_dens_tolerance)
-        assertion_message = "hippocampus astrocyte densities out of literature range"
-        z_score_assertion(hippocampus_astro_dens_sum, hippocampus_astro_dens_lit - hippocampus_astro_dens_tolerance, hippocampus_astro_dens_lit + hippocampus_astro_dens_tolerance, assertion_message)
+            # Assertion on striatum astrocyte densities
+            striatum_astro_dens = astrocyte[np.isin(annotation, list(striatum))]
+            striatum_astro_dens_sum = np.sum(striatum_astro_dens) / striatum_nb_vox # * voxel_volume
+            print("\nAssertion on striatum astrocyte densities (/mm^3)")
+            print_range_bar(striatum_astro_dens_sum, striatum_astro_dens_lit - striatum_astro_dens_tolerance, striatum_astro_dens_lit + striatum_astro_dens_tolerance)
+            assertion_message = "striatum astrocyte densities out of literature range"
+            z_score_assertion(striatum_astro_dens_sum, striatum_astro_dens_lit - striatum_astro_dens_tolerance, striatum_astro_dens_lit + striatum_astro_dens_tolerance, assertion_message)
 
-        # Assertion on hippocampus microglia densities
-        hippocampus_microglia_dens = microglia[np.isin(annotation, list(hippocampus))]
-        hippocampus_microglia_dens_sum = np.sum(hippocampus_microglia_dens) / hippocampus_nb_vox # * voxel_volume
-        print("\nAssertion on hippocampus microglia densities (/mm^3)")
-        print_range_bar(hippocampus_microglia_dens_sum, hippocampus_microglia_dens_lit - hippocampus_microglia_dens_tolerance, hippocampus_microglia_dens_lit + hippocampus_microglia_dens_tolerance)
-        assertion_message = "hippocampus microglia densities out of literature range"
-        z_score_assertion(hippocampus_microglia_dens_sum, hippocampus_microglia_dens_lit - hippocampus_microglia_dens_tolerance, hippocampus_microglia_dens_lit + hippocampus_microglia_dens_tolerance, assertion_message)
+            # Assertion on striatum microglia densities
+            striatum_microglia_dens = microglia[np.isin(annotation, list(striatum))]
+            striatum_microglia_dens_sum = np.sum(striatum_microglia_dens) / striatum_nb_vox # * voxel_volume
+            print("\nAssertion on striatum microglia densities (/mm^3)")
+            print_range_bar(striatum_microglia_dens_sum, striatum_microglia_dens_lit - striatum_microglia_dens_tolerance, striatum_microglia_dens_lit + striatum_microglia_dens_tolerance)
+            assertion_message = "striatum microglia densities out of literature range"
+            z_score_assertion(striatum_microglia_dens_sum, striatum_microglia_dens_lit - striatum_microglia_dens_tolerance, striatum_microglia_dens_lit + striatum_microglia_dens_tolerance, assertion_message)
 
-        # ---------------------------------------------------------------------------------------------
+            # ---------------------------------------------------------------------------------------------
 
 
 
-        # ---------------------------------------------------------------------------------------------
-        # THALAMUS
+            # ---------------------------------------------------------------------------------------------
+            # HIPPOCAMPUS
 
-        print("\n\n----------THALAMUS----------")
+            print("\n\n----------HIPPOCAMPUS----------")
 
-        # Assertion on Talamus cell densities
-        thalamus_cell_dens = cell[np.isin(annotation, list(thalamus))]
-        thalamus_cell_dens_sum = np.sum(thalamus_cell_dens) / thalamus_nb_vox # * voxel_volume
-        print("\nAssertion on Thalamus cell densities (/mm^3)")
-        print("/!\ Tolerance set to default for cell density")
-        print_range_bar(thalamus_cell_dens_sum, thalamus_cell_dens_lit - thalamus_cell_dens_tolerance, thalamus_cell_dens_lit + thalamus_cell_dens_tolerance)
-        assertion_message = "Thalamus cell densities out of literature range"
-        z_score_assertion(thalamus_cell_dens_sum, thalamus_cell_dens_lit - thalamus_cell_dens_tolerance, thalamus_cell_dens_lit + thalamus_cell_dens_tolerance, assertion_message)
+            # Assertion on hippocampus neuron densities
+            hippocampus_neuron_dens = neuron[np.isin(annotation, list(hippocampal_formation))]
+            hippocampus_neuron_dens_sum = np.sum(hippocampus_neuron_dens) / hippocampal_formation_nb_vox # * voxel_volume
+            print("\nAssertion on hippocampus neuron densities (/mm^3)")
+            print("/!\ Tolerance not available, set by default")
+            print_range_bar(hippocampus_neuron_dens_sum, hippocampus_neuron_dens_lit - hippocampus_neuron_dens_tolerance, hippocampus_neuron_dens_lit + hippocampus_neuron_dens_tolerance)
+            assertion_message = "hippocampus neuron densities out of literature range"
+            z_score_assertion(hippocampus_neuron_dens_sum, hippocampus_neuron_dens_lit - hippocampus_neuron_dens_tolerance, hippocampus_neuron_dens_lit + hippocampus_neuron_dens_tolerance, assertion_message)
 
-        # Assertion on Thalamus glia densities
-        thalamus_glia_dens = cell[np.isin(annotation, list(thalamus))]
-        thalamus_glia_dens_sum = np.sum(thalamus_glia_dens) / thalamus_nb_vox # * voxel_volume
-        print("\nAssertion on Thalamus glia densities (/mm^3)")
-        print("/!\ Tolerance set to default for glia density")
-        print_range_bar(thalamus_glia_dens_sum, thalamus_glia_dens_lit - thalamus_glia_dens_tolerance, thalamus_glia_dens_lit + thalamus_glia_dens_tolerance)
-        assertion_message = "Thalamus cell densities out of literature range"
-        z_score_assertion(thalamus_glia_dens_sum, thalamus_glia_dens_lit - thalamus_glia_dens_tolerance, thalamus_glia_dens_lit + thalamus_glia_dens_tolerance, assertion_message)
+            # Assertion on hippocampus oligodendrocyte densities
+            hippocampus_oligo_dens = oligodendrocyte[np.isin(annotation, list(hippocampus))]
+            hippocampus_oligo_dens_sum = np.sum(hippocampus_oligo_dens) / hippocampus_nb_vox # * voxel_volume
+            print("\nAssertion on hippocampus oligodendrocyte densities (/mm^3)")
+            print("/!\ Tolerance not available, set by default")
+            print_range_bar(hippocampus_oligo_dens_sum, hippocampus_oligo_dens_lit - hippocampus_oligo_dens_tolerance, hippocampus_oligo_dens_lit + hippocampus_oligo_dens_tolerance)
+            assertion_message = "hippocampus oligodendrocyte densities out of literature range"
+            z_score_assertion(hippocampus_oligo_dens_sum, hippocampus_oligo_dens_lit - hippocampus_oligo_dens_tolerance, hippocampus_oligo_dens_lit + hippocampus_oligo_dens_tolerance, assertion_message)
 
-        # Assertion on LGd neuron densities
-        LGd_neuron_dens = neuron[np.isin(annotation, list(LGd))]
-        LGd_neuron_dens_sum = np.sum(LGd_neuron_dens) / LGd_nb_vox # * voxel_volume
-        print("\nAssertion on LGd neuron densities (/mm^3)")
-        print_range_bar(LGd_neuron_dens_sum, LGd_neuron_dens_lit - LGd_neuron_dens_tolerance, LGd_neuron_dens_lit + LGd_neuron_dens_tolerance)
-        assertion_message = "LGd neuron densities out of literature range"
-        z_score_assertion(LGd_neuron_dens_sum, LGd_neuron_dens_lit - LGd_neuron_dens_tolerance, LGd_neuron_dens_lit + LGd_neuron_dens_tolerance, assertion_message)
+            # Assertion on hippocampus astrocyte densities
+            hippocampus_astro_dens = astrocyte[np.isin(annotation, list(hippocampus))]
+            hippocampus_astro_dens_sum = np.sum(hippocampus_astro_dens) / hippocampus_nb_vox # * voxel_volume
+            print("\nAssertion on hippocampus astrocyte densities (/mm^3)")
+            print_range_bar(hippocampus_astro_dens_sum, hippocampus_astro_dens_lit - hippocampus_astro_dens_tolerance, hippocampus_astro_dens_lit + hippocampus_astro_dens_tolerance)
+            assertion_message = "hippocampus astrocyte densities out of literature range"
+            z_score_assertion(hippocampus_astro_dens_sum, hippocampus_astro_dens_lit - hippocampus_astro_dens_tolerance, hippocampus_astro_dens_lit + hippocampus_astro_dens_tolerance, assertion_message)
 
-        # Assertion on VPM neuron densities
-        VPM_neuron_dens = neuron[np.isin(annotation, list(VPM))]
-        VPM_neuron_dens_sum = np.sum(VPM_neuron_dens) / VPM_nb_vox # * voxel_volume
-        print("\nAssertion on VPM neuron densities (/mm^3)")
-        print_range_bar(VPM_neuron_dens_sum, VPL_neuron_dens_lit - VPM_neuron_dens_tolerance, VPM_neuron_dens_lit + VPM_neuron_dens_tolerance)
-        assertion_message = "VPM neuron densities out of literature range"
-        z_score_assertion(VPM_neuron_dens_sum, VPM_neuron_dens_lit - VPM_neuron_dens_tolerance, VPM_neuron_dens_lit + VPM_neuron_dens_tolerance, assertion_message)
+            # Assertion on hippocampus microglia densities
+            hippocampus_microglia_dens = microglia[np.isin(annotation, list(hippocampus))]
+            hippocampus_microglia_dens_sum = np.sum(hippocampus_microglia_dens) / hippocampus_nb_vox # * voxel_volume
+            print("\nAssertion on hippocampus microglia densities (/mm^3)")
+            print_range_bar(hippocampus_microglia_dens_sum, hippocampus_microglia_dens_lit - hippocampus_microglia_dens_tolerance, hippocampus_microglia_dens_lit + hippocampus_microglia_dens_tolerance)
+            assertion_message = "hippocampus microglia densities out of literature range"
+            z_score_assertion(hippocampus_microglia_dens_sum, hippocampus_microglia_dens_lit - hippocampus_microglia_dens_tolerance, hippocampus_microglia_dens_lit + hippocampus_microglia_dens_tolerance, assertion_message)
 
-        # Assertion on VPL neuron densities
-        VPL_neuron_dens = neuron[np.isin(annotation, list(VPL))]
-        VPL_neuron_dens_sum = np.sum(VPL_neuron_dens) / VPL_nb_vox # * voxel_volume
-        print("\nAssertion on VPL neuron densities (/mm^3)")
-        print("/!\ Tolerance set to default for neuron density")
-        print_range_bar(VPL_neuron_dens_sum, VPL_neuron_dens_lit - VPL_neuron_dens_tolerance, VPL_neuron_dens_lit + VPL_neuron_dens_tolerance)
-        assertion_message = "VPL neuron densities out of literature range"
-        z_score_assertion(VPL_neuron_dens_sum, VPL_neuron_dens_lit - VPL_neuron_dens_tolerance, VPL_neuron_dens_lit + VPL_neuron_dens_tolerance, assertion_message)
-
-    if args.inhibitory_density_folder is not None:
-
-        # Assertion on VPL pv densities
-        VPL_pv_dens = pv[np.isin(annotation, list(VPL))]
-        VPL_pv_dens_sum = np.sum(VPL_pv_dens) / VPL_nb_vox # * voxel_volume
-        print("\nAssertion on VPL pv densities (/mm^3)")
-        print_range_bar(VPL_pv_dens_sum, VPL_pv_dens_lit - VPL_pv_dens_tolerance, VPL_pv_dens_lit + VPL_pv_dens_tolerance)
-        assertion_message = "VPL pv densities out of literature range"
-        z_score_assertion(VPL_pv_dens_sum, VPL_pv_dens_lit - VPL_pv_dens_tolerance, VPL_pv_dens_lit + VPL_pv_dens_tolerance, assertion_message)
-
-        # Assertion on VPL sst densities
-        VPL_sst_dens = sst[np.isin(annotation, list(VPL))]
-        VPL_sst_dens_sum = np.sum(VPL_sst_dens) / VPL_nb_vox # * voxel_volume
-        print("\nAssertion on VPL sst densities (/mm^3)")
-        print_range_bar(VPL_sst_dens_sum, VPL_sst_dens_lit - VPL_sst_dens_tolerance, VPL_sst_dens_lit + VPL_sst_dens_tolerance)
-        assertion_message = "VPL sst densities out of literature range"
-        z_score_assertion(VPL_sst_dens_sum, VPL_sst_dens_lit - VPL_sst_dens_tolerance, VPL_sst_dens_lit + VPL_sst_dens_tolerance, assertion_message)
-
-        # Assertion on VPL vip densities
-        VPL_vip_dens = vip[np.isin(annotation, list(VPL))]
-        VPL_vip_dens_sum = np.sum(VPL_vip_dens) / VPL_nb_vox # * voxel_volume
-        print("\nAssertion on VPL vip densities (/mm^3)")
-        print_range_bar(VPL_vip_dens_sum, VPL_vip_dens_lit - VPL_vip_dens_tolerance, VPL_vip_dens_lit + VPL_vip_dens_tolerance)
-        assertion_message = "VPL vip densities out of literature range"
-        z_score_assertion(VPL_vip_dens_sum, VPL_vip_dens_lit - VPL_vip_dens_tolerance, VPL_vip_dens_lit + VPL_vip_dens_tolerance, assertion_message)
-
-        # ---------------------------------------------------------------------------------------------
+            # ---------------------------------------------------------------------------------------------
 
 
-        # ---------------------------------------------------------------------------------------------
-        # MAIN OLFACTORY BULB
 
-        print("\n\n----------MAIN OLFACTORY BULB----------")
+            # ---------------------------------------------------------------------------------------------
+            # THALAMUS
 
-        # Assertion on MOB cell densities
-        MOB_cell_dens = cell[np.isin(annotation, list(MOB))]
-        MOB_cell_dens_sum = np.sum(MOB_cell_dens) / MOB_nb_vox # * voxel_volume
-        print("\nAssertion on MOB cell densities (/mm^3)")
-        print_range_bar(MOB_cell_dens_sum, MOB_cell_dens_lit - MOB_cell_dens_tolerance, MOB_cell_dens_lit + MOB_cell_dens_tolerance)
-        assertion_message = "MOB_cell densities out of literature range"
-        z_score_assertion(MOB_cell_dens_sum, MOB_cell_dens_lit - MOB_cell_dens_tolerance, MOB_cell_dens_lit + MOB_cell_dens_tolerance, assertion_message)
+            print("\n\n----------THALAMUS----------")
 
-        # Assertion on MOB neuron densities
-        MOB_neuron_dens = neuron[np.isin(annotation, list(MOB))]
-        MOB_neuron_dens_sum = np.sum(MOB_neuron_dens) / MOB_nb_vox # * voxel_volume
-        print("\nAssertion on MOB neuron densities (/mm^3)")
-        print_range_bar(MOB_neuron_dens_sum, MOB_neuron_dens_lit - MOB_neuron_dens_tolerance, MOB_neuron_dens_lit + MOB_neuron_dens_tolerance)
-        assertion_message = "MOB_neuron densities out of literature range"
-        z_score_assertion(MOB_neuron_dens_sum, MOB_neuron_dens_lit - MOB_neuron_dens_tolerance, MOB_neuron_dens_lit + MOB_neuron_dens_tolerance, assertion_message)
+            # Assertion on Talamus cell densities
+            thalamus_cell_dens = cell[np.isin(annotation, list(thalamus))]
+            thalamus_cell_dens_sum = np.sum(thalamus_cell_dens) / thalamus_nb_vox # * voxel_volume
+            print("\nAssertion on Thalamus cell densities (/mm^3)")
+            print("/!\ Tolerance set to default for cell density")
+            print_range_bar(thalamus_cell_dens_sum, thalamus_cell_dens_lit - thalamus_cell_dens_tolerance, thalamus_cell_dens_lit + thalamus_cell_dens_tolerance)
+            assertion_message = "Thalamus cell densities out of literature range"
+            z_score_assertion(thalamus_cell_dens_sum, thalamus_cell_dens_lit - thalamus_cell_dens_tolerance, thalamus_cell_dens_lit + thalamus_cell_dens_tolerance, assertion_message)
 
-        # Assertion on MOB glia densities
-        MOB_glia_dens = glia[np.isin(annotation, list(MOB))]
-        MOB_glia_dens_sum = np.sum(MOB_glia_dens) / MOB_nb_vox # * voxel_volume
-        print("\nAssertion on MOB glia densities (/mm^3)")
-        print_range_bar(MOB_glia_dens_sum, MOB_glia_dens_lit - MOB_glia_dens_tolerance, MOB_glia_dens_lit + MOB_glia_dens_tolerance)
-        assertion_message = "MOB_glia densities out of literature range"
-        z_score_assertion(MOB_glia_dens_sum, MOB_glia_dens_lit - MOB_glia_dens_tolerance, MOB_glia_dens_lit + MOB_glia_dens_tolerance, assertion_message)
+            # Assertion on Thalamus glia densities
+            thalamus_glia_dens = cell[np.isin(annotation, list(thalamus))]
+            thalamus_glia_dens_sum = np.sum(thalamus_glia_dens) / thalamus_nb_vox # * voxel_volume
+            print("\nAssertion on Thalamus glia densities (/mm^3)")
+            print("/!\ Tolerance set to default for glia density")
+            print_range_bar(thalamus_glia_dens_sum, thalamus_glia_dens_lit - thalamus_glia_dens_tolerance, thalamus_glia_dens_lit + thalamus_glia_dens_tolerance)
+            assertion_message = "Thalamus cell densities out of literature range"
+            z_score_assertion(thalamus_glia_dens_sum, thalamus_glia_dens_lit - thalamus_glia_dens_tolerance, thalamus_glia_dens_lit + thalamus_glia_dens_tolerance, assertion_message)
+
+            # Assertion on LGd neuron densities
+            LGd_neuron_dens = neuron[np.isin(annotation, list(LGd))]
+            LGd_neuron_dens_sum = np.sum(LGd_neuron_dens) / LGd_nb_vox # * voxel_volume
+            print("\nAssertion on LGd neuron densities (/mm^3)")
+            print_range_bar(LGd_neuron_dens_sum, LGd_neuron_dens_lit - LGd_neuron_dens_tolerance, LGd_neuron_dens_lit + LGd_neuron_dens_tolerance)
+            assertion_message = "LGd neuron densities out of literature range"
+            z_score_assertion(LGd_neuron_dens_sum, LGd_neuron_dens_lit - LGd_neuron_dens_tolerance, LGd_neuron_dens_lit + LGd_neuron_dens_tolerance, assertion_message)
+
+            # Assertion on VPM neuron densities
+            VPM_neuron_dens = neuron[np.isin(annotation, list(VPM))]
+            VPM_neuron_dens_sum = np.sum(VPM_neuron_dens) / VPM_nb_vox # * voxel_volume
+            print("\nAssertion on VPM neuron densities (/mm^3)")
+            print_range_bar(VPM_neuron_dens_sum, VPL_neuron_dens_lit - VPM_neuron_dens_tolerance, VPM_neuron_dens_lit + VPM_neuron_dens_tolerance)
+            assertion_message = "VPM neuron densities out of literature range"
+            z_score_assertion(VPM_neuron_dens_sum, VPM_neuron_dens_lit - VPM_neuron_dens_tolerance, VPM_neuron_dens_lit + VPM_neuron_dens_tolerance, assertion_message)
+
+            # Assertion on VPL neuron densities
+            VPL_neuron_dens = neuron[np.isin(annotation, list(VPL))]
+            VPL_neuron_dens_sum = np.sum(VPL_neuron_dens) / VPL_nb_vox # * voxel_volume
+            print("\nAssertion on VPL neuron densities (/mm^3)")
+            print("/!\ Tolerance set to default for neuron density")
+            print_range_bar(VPL_neuron_dens_sum, VPL_neuron_dens_lit - VPL_neuron_dens_tolerance, VPL_neuron_dens_lit + VPL_neuron_dens_tolerance)
+            assertion_message = "VPL neuron densities out of literature range"
+            z_score_assertion(VPL_neuron_dens_sum, VPL_neuron_dens_lit - VPL_neuron_dens_tolerance, VPL_neuron_dens_lit + VPL_neuron_dens_tolerance, assertion_message)
+
+        if args.inhibitory_density_folder is not None:
+
+            # Assertion on VPL pv densities
+            VPL_pv_dens = pv[np.isin(annotation, list(VPL))]
+            VPL_pv_dens_sum = np.sum(VPL_pv_dens) / VPL_nb_vox # * voxel_volume
+            print("\nAssertion on VPL pv densities (/mm^3)")
+            print_range_bar(VPL_pv_dens_sum, VPL_pv_dens_lit - VPL_pv_dens_tolerance, VPL_pv_dens_lit + VPL_pv_dens_tolerance)
+            assertion_message = "VPL pv densities out of literature range"
+            z_score_assertion(VPL_pv_dens_sum, VPL_pv_dens_lit - VPL_pv_dens_tolerance, VPL_pv_dens_lit + VPL_pv_dens_tolerance, assertion_message)
+
+            # Assertion on VPL sst densities
+            VPL_sst_dens = sst[np.isin(annotation, list(VPL))]
+            VPL_sst_dens_sum = np.sum(VPL_sst_dens) / VPL_nb_vox # * voxel_volume
+            print("\nAssertion on VPL sst densities (/mm^3)")
+            print_range_bar(VPL_sst_dens_sum, VPL_sst_dens_lit - VPL_sst_dens_tolerance, VPL_sst_dens_lit + VPL_sst_dens_tolerance)
+            assertion_message = "VPL sst densities out of literature range"
+            z_score_assertion(VPL_sst_dens_sum, VPL_sst_dens_lit - VPL_sst_dens_tolerance, VPL_sst_dens_lit + VPL_sst_dens_tolerance, assertion_message)
+
+            # Assertion on VPL vip densities
+            VPL_vip_dens = vip[np.isin(annotation, list(VPL))]
+            VPL_vip_dens_sum = np.sum(VPL_vip_dens) / VPL_nb_vox # * voxel_volume
+            print("\nAssertion on VPL vip densities (/mm^3)")
+            print_range_bar(VPL_vip_dens_sum, VPL_vip_dens_lit - VPL_vip_dens_tolerance, VPL_vip_dens_lit + VPL_vip_dens_tolerance)
+            assertion_message = "VPL vip densities out of literature range"
+            z_score_assertion(VPL_vip_dens_sum, VPL_vip_dens_lit - VPL_vip_dens_tolerance, VPL_vip_dens_lit + VPL_vip_dens_tolerance, assertion_message)
+
+            # ---------------------------------------------------------------------------------------------
+
+
+            # ---------------------------------------------------------------------------------------------
+            # MAIN OLFACTORY BULB
+
+            print("\n\n----------MAIN OLFACTORY BULB----------")
+
+            # Assertion on MOB cell densities
+            MOB_cell_dens = cell[np.isin(annotation, list(MOB))]
+            MOB_cell_dens_sum = np.sum(MOB_cell_dens) / MOB_nb_vox # * voxel_volume
+            print("\nAssertion on MOB cell densities (/mm^3)")
+            print_range_bar(MOB_cell_dens_sum, MOB_cell_dens_lit - MOB_cell_dens_tolerance, MOB_cell_dens_lit + MOB_cell_dens_tolerance)
+            assertion_message = "MOB_cell densities out of literature range"
+            z_score_assertion(MOB_cell_dens_sum, MOB_cell_dens_lit - MOB_cell_dens_tolerance, MOB_cell_dens_lit + MOB_cell_dens_tolerance, assertion_message)
+
+            # Assertion on MOB neuron densities
+            MOB_neuron_dens = neuron[np.isin(annotation, list(MOB))]
+            MOB_neuron_dens_sum = np.sum(MOB_neuron_dens) / MOB_nb_vox # * voxel_volume
+            print("\nAssertion on MOB neuron densities (/mm^3)")
+            print_range_bar(MOB_neuron_dens_sum, MOB_neuron_dens_lit - MOB_neuron_dens_tolerance, MOB_neuron_dens_lit + MOB_neuron_dens_tolerance)
+            assertion_message = "MOB_neuron densities out of literature range"
+            z_score_assertion(MOB_neuron_dens_sum, MOB_neuron_dens_lit - MOB_neuron_dens_tolerance, MOB_neuron_dens_lit + MOB_neuron_dens_tolerance, assertion_message)
+
+            # Assertion on MOB glia densities
+            MOB_glia_dens = glia[np.isin(annotation, list(MOB))]
+            MOB_glia_dens_sum = np.sum(MOB_glia_dens) / MOB_nb_vox # * voxel_volume
+            print("\nAssertion on MOB glia densities (/mm^3)")
+            print_range_bar(MOB_glia_dens_sum, MOB_glia_dens_lit - MOB_glia_dens_tolerance, MOB_glia_dens_lit + MOB_glia_dens_tolerance)
+            assertion_message = "MOB_glia densities out of literature range"
+            z_score_assertion(MOB_glia_dens_sum, MOB_glia_dens_lit - MOB_glia_dens_tolerance, MOB_glia_dens_lit + MOB_glia_dens_tolerance, assertion_message)
 
 
     print("\n==================================")

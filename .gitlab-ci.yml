@@ -21,7 +21,7 @@ unit_test:
     - pip install .
   script:
     - export PYTHONPATH=.:$PYTHONPATH
-    - densities-validation --hierarchy tests/1.json --annotation tests/annotation_ccfv2_25.nrrd
+    - densities-validation --annotation tests/annotation_ccfv2_25.nrrd
   variables:
     KUBERNETES_MEMORY_LIMIT: 8Gi
     KUBERNETES_MEMORY_REQUEST: 8Gi
