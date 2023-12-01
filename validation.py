@@ -41,7 +41,7 @@ def parse_args(args):
     parser.add_argument(
         "--hierarchy",
         dest="hierarchy_json",
-        required=True,
+        required=False,
         metavar="<FILE PATH>",
         help="The hierarchy JSON file, sometimes called 1.json")
 
