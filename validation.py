@@ -729,7 +729,7 @@ def main():
         striatum_microglia_dens_sum = np.sum(striatum_microglia_dens) / striatum_nb_vox # * voxel_volume
         print("\nAssertion on striatum microglia densities (/mm^3)")
         print_range_bar(striatum_microglia_dens_sum, striatum_microglia_dens_lit - striatum_microglia_dens_tolerance, striatum_microglia_dens_lit + striatum_microglia_dens_tolerance)
-        warning_message = "striatum microglia densities out of literature range"
+        assertion_message = "striatum microglia densities out of literature range"
         z_score_assertion_sub_regions(striatum_microglia_dens_sum, striatum_microglia_dens_lit - striatum_microglia_dens_tolerance, striatum_microglia_dens_lit + striatum_microglia_dens_tolerance, assertion_message)
 
         # ---------------------------------------------------------------------------------------------
