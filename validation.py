@@ -400,7 +400,7 @@ def main():
 
         # Reading the input files
         excitatory_path_list = [os.path.join(args.excitatory_ME_types_folder,f) for f in os.listdir(args.excitatory_ME_types_folder) if f.endswith(".nrrd")]
-        generic_excitatory = VoxelData.load_nrrd(os.path.join(args.excitatory_ME_types_folder, "Generic_Excitatory_Neuron_MType_Generic_Excitatory_Neuron_EType.nrrd")).raw
+        # generic_excitatory = VoxelData.load_nrrd(os.path.join(args.excitatory_ME_types_folder, "Generic_Excitatory_Neuron_MType_Generic_Excitatory_Neuron_EType.nrrd")).raw
         generic_inhibitory = VoxelData.load_nrrd(os.path.join(args.excitatory_ME_types_folder, "Generic_Inhibitory_Neuron_MType_Generic_Inhibitory_Neuron_EType.nrrd")).raw
 
         # Assertion on total sum of inhibitory + excitatory neuron densities
@@ -566,7 +566,6 @@ def main():
         fiber_tracts_neuron_sum = np.sum(fiber_tracts_neuron) * voxel_volume
         diff_fiber_tracts_neuron_sum = abs(neuron_dens_fiber_tracts_lit - fiber_tracts_neuron_sum)
         print("\nAssertion on fiber tracks + grooves + ventricular_system where no neuron should be found")
-        # assert(diff_fiber_tracts_neuron_sum <= neuron_dens_fiber_tracts_tolerance)
         if not diff_fiber_tracts_neuron_sum <= neuron_dens_fiber_tracts_tolerance:
             warning_message = "fiber tracks + grooves + ventricular_system where no neuron should be found not consistent with literature"
             warnings.warn(warning_message, UserWarning)
