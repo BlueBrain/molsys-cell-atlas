@@ -3,8 +3,8 @@ from setuptools import setup, find_packages
 setup(
     name="densities-validation",
     author="Blue Brain Project, EPFL",
-    setup_requires=["setuptools_scm"],
-    use_scm_version=True,
+    setup_requires=["setuptools-git-versioning"],
+    version_config=True,
     description=(
         "Performing a set of assertions on cell densities and its subtypes "
         "according to litterature"
