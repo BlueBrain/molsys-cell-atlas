@@ -14,7 +14,7 @@ setup(
     install_requires=[
         "voxcell==3.1.6",
     ],
-    packages=find_packages(),
+    packages=find_packages(exclude=("tests",)),
     include_package_data=True,
     entry_points={
         "console_scripts": ["densities-validation=validation:main"]
