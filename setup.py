@@ -4,7 +4,7 @@ setup(
     name="densities-validation",
     author="Blue Brain Project, EPFL",
     setup_requires=["setuptools-git-versioning"],
-    version_config=True,
+    setuptools_git_versioning={'enabled': True},
     description=(
         "Performing a set of assertions on cell densities and its subtypes "
         "according to litterature"
