@@ -1,6 +1,3 @@
-default:
-  image: python:3.8
-
 include:
   - project: nse/ci
     file:
@@ -8,10 +5,20 @@ include:
       - /ci/jobs/build-package.yml
       - /ci/jobs/publish-package.yml
 
+default:
+  image: python:3.8
+
 stages:
   - unit-test
   - build
   - publish
+
+build-package:
+  rules:
+    - when: on_success
+publish-package:
+  rules:
+    - if: $CI_COMMIT_TAG
 
 before_script:
   - pip install .[dev]
@@ -27,10 +34,3 @@ unit_test:
   variables:
     KUBERNETES_MEMORY_LIMIT: 8Gi
     KUBERNETES_MEMORY_REQUEST: 8Gi
-
-build-package:
-  rules:
-    - when: on_success
-publish-package:
-  rules:
-    - if: $CI_COMMIT_TAG
