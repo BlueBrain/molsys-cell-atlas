@@ -13,12 +13,13 @@ stages:
   - build
   - publish
 
+before_script:
+  - pip install .[dev]
+
 unit_test:
   stage: unit-test
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-  before_script:
-    - pip install .
   script:
     - export PYTHONPATH=.:$PYTHONPATH
     - densities-validation  --annotation tests/annotation_ccfv2_25.nrrd
