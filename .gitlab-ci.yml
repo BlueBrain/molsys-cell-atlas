@@ -1,5 +1,5 @@
 default:
-  image: python:3.9
+  image: python:3.8
 
 include:
   - project: nse/ci
@@ -21,7 +21,8 @@ unit_test:
     - pip install .
   script:
     - export PYTHONPATH=.:$PYTHONPATH
-    - densities-validation --hierarchy tests/1.json --annotation tests/annotation_ccfv2_25.nrrd
+    - densities-validation  --annotation tests/annotation_ccfv2_25.nrrd
+    - densities-validation  --annotation tests/annotation_ccfv2_25.nrrd  --hierarchy tests/1.json  --cell_density tests/overall_cell_density_correctednissl.nrrd  --neuron_glia_density_folder tests/cell_densities_correctednissl
   variables:
     KUBERNETES_MEMORY_LIMIT: 8Gi
     KUBERNETES_MEMORY_REQUEST: 8Gi
