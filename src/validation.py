@@ -13,7 +13,7 @@ from argparse import ArgumentParser
 import os, sys
 import warnings
 import inspect
-from literature import *
+from src.literature import *
 # =============================================================================================
 
 
