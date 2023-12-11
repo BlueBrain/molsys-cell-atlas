@@ -4,7 +4,7 @@ setup(
     author="Blue Brain Project, EPFL",
     setup_requires=["setuptools_scm"],
     #use_scm_version=True,
-    version="v0.0.4",
+    version="v0.0.5",
     description=(
         "Performing a set of assertions on cell densities and its subtypes "
         "according to litterature"
