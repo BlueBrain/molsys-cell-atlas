@@ -390,7 +390,7 @@ def main():
             print("+ adding file " + str(i+1) + "/" + str(len(excitatory_transplant_path_list)))
             exci_inhib_transplant = VoxelData.load_nrrd(excitatory_transplant_path_list[i]).raw
             exci_inhib_transplant_sum += exci_inhib_transplant
-        exci_inhib_transplant_sum_sum = np.sum(exci_inhib_transplant_sum) / whole_brain_annotation_dens # * voxel_volume
+        exci_inhib_transplant_sum_sum = np.sum(exci_inhib_transplant_sum) / nb_voxels_ccfv3_2015 # * voxel_volume
         print("\nAssertion on sum of inhibitory + excitatory neuron densities after transplant (/mm^3)")
         print_range_bar(exci_inhib_transplant_sum_sum, neuron_dens_lit - neuron_dens_tolerance, neuron_dens_lit + neuron_dens_tolerance)
         # print("/!\ Data not available")
@@ -410,7 +410,7 @@ def main():
             print("+ adding file " + str(i+1) + "/" + str(len(inhibitory_transplant_path_list)))
             inhib_transplant = VoxelData.load_nrrd(inhibitory_transplant_path_list[i]).raw
             inhib_transplant_sum += inhib_transplant
-        inhib_transplant_sum_sum = np.sum(inhib_transplant_sum) / whole_brain_annotation_dens # * voxel_volume
+        inhib_transplant_sum_sum = np.sum(inhib_transplant_sum) / nb_voxels_ccfv3_2015 # * voxel_volume
         print("\nAssertion on total sum of inhibitory ME-type neuron densities after transplant which should be inferior or equal to the total inhibitory neurons")
         print_range_bar(inhib_transplant_sum_sum, inhibitory_neuron_dens_lit - inhibitory_neuron_dens_lit, inhibitory_neuron_dens_lit + inhibitory_neuron_dens_tolerance)
         assertion_message = "sum of inhibitory ME-type neuron densities after transplant out of literature range"
