@@ -290,7 +290,7 @@ def main():
         # print("/!\ Default tolerance increased by a factor of 2.5")
         print_range_bar(inhi_dens, inhibitory_neuron_dens_lit - inhibitory_neuron_dens_tolerance, inhibitory_neuron_dens_lit + inhibitory_neuron_dens_tolerance)
         assertion_message = "total inhibitory neuron densities out of literature range"
-        z_score_assertion(inhi_dens, inhibitory_neuron_dens_lit - inhibitory_neuron_dens_tolerance, inhibitory_neuron_dens_lit + inhibitory_neuron_dens_tolerance, assertion_message, 2)
+        z_score_assertion(inhi_dens, inhibitory_neuron_dens_lit - inhibitory_neuron_dens_tolerance, inhibitory_neuron_dens_lit + inhibitory_neuron_dens_tolerance, assertion_message)
 
         # Assertion on total sst densities
         sst_dens = np.sum(sst) / whole_brain_annotation_dens # * voxel_volume
@@ -371,7 +371,7 @@ def main():
         print("\nAssertion total inhibitory sum density (/mm^3)")
         print_range_bar(tot_inhib_sum_sum, inhibitory_neuron_dens_lit - inhibitory_neuron_dens_tolerance, inhibitory_neuron_dens_lit + inhibitory_neuron_dens_tolerance)
         assertion_message = "total inhibitory sum density out of literature range"
-        z_score_assertion(tot_inhib_sum_sum, inhibitory_neuron_dens_lit - inhibitory_neuron_dens_tolerance, inhibitory_neuron_dens_lit + inhibitory_neuron_dens_tolerance, assertion_message, 2)
+        z_score_assertion(tot_inhib_sum_sum, inhibitory_neuron_dens_lit - inhibitory_neuron_dens_tolerance, inhibitory_neuron_dens_lit + inhibitory_neuron_dens_tolerance, assertion_message)
 
         # Assertion on total excitatory neuron density
         print("\nAssertion on total excitatory neuron densities")
