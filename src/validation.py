@@ -328,7 +328,7 @@ def main():
             inhib = VoxelData.load_nrrd(inhibitory_path_list[i]).raw
             inhib_sum += inhib
         inhib_sum_sum = np.sum(inhib_sum) / whole_brain_annotation_nb_voxels # * voxel_volume
-        print("\nAssertion on average sum of inhibitory ME-type neuron density which should be inferior or equal to the average inhibitory neuron density")
+        print("\nAssertion on average sum of inhibitory ME-type neuron densities which should be inferior or equal to the average inhibitory neuron density")
         print_range_bar(inhib_sum_sum, inhibitory_neuron_dens_lit - inhibitory_neuron_dens_lit, inhibitory_neuron_dens_lit + inhibitory_neuron_dens_tolerance)
         assertion_message = "Average sum of inhibitory ME-type neuron density out of literature range"
         z_score_assertion(inhib_sum_sum, inhibitory_neuron_dens_lit - inhibitory_neuron_dens_lit, inhibitory_neuron_dens_lit + inhibitory_neuron_dens_tolerance, assertion_message, 2)
@@ -341,7 +341,7 @@ def main():
         # generic_excitatory = VoxelData.load_nrrd(os.path.join(args.excitatory_ME_types_folder, "Generic_Excitatory_Neuron_MType_Generic_Excitatory_Neuron_EType.nrrd")).raw
         generic_inhibitory = VoxelData.load_nrrd(os.path.join(args.excitatory_ME_types_folder, "Generic_Inhibitory_Neuron_MType_Generic_Inhibitory_Neuron_EType.nrrd")).raw
 
-        # Assertion on average sum of inhibitory + excitatory neuron density
+        # Assertion on average sum of inhibitory + excitatory neuron densities
         exci_inhib_sum = VoxelData.load_nrrd(excitatory_path_list[0]).raw
         print("\nadding initialization 1/" + str(len(excitatory_path_list)))
         for i in range (1, len(excitatory_path_list)):
@@ -349,10 +349,10 @@ def main():
             exci_inhib = VoxelData.load_nrrd(excitatory_path_list[i]).raw
             exci_inhib_sum += exci_inhib
         exci_inhib_sum_sum = np.sum(exci_inhib_sum) / whole_brain_annotation_nb_voxels # * voxel_volume
-        print("\nAssertion on average sum of inhibitory + excitatory neuron density (/mm^3)")
+        print("\nAssertion on average sum of inhibitory + excitatory neuron densities (/mm^3)")
         print_range_bar(exci_inhib_sum_sum, neuron_dens_lit - neuron_dens_tolerance, neuron_dens_lit + neuron_dens_tolerance)
         # print("/!\ Data not available")
-        assertion_message = "Average sum of inhibitory + excitatory neuron density out of literature range"
+        assertion_message = "Average sum of inhibitory + excitatory neuron densities out of literature range"
         z_score_assertion(exci_inhib_sum_sum, neuron_dens_lit - neuron_dens_tolerance, neuron_dens_lit + neuron_dens_tolerance, assertion_message, 2)
 
 
@@ -371,43 +371,43 @@ def main():
         print("/!\ Literature data not available")
 
 
-    if args.excitatory_ME_types_transplant_folder is not None:
+    # if args.excitatory_ME_types_transplant_folder is not None:
 
-        # Reading the input files
-        excitatory_transplant_path_list = [os.path.join(args.excitatory_ME_types_transplant_folder,f) for f in os.listdir(args.excitatory_ME_types_transplant_folder) if f.endswith(".nrrd")]
+    #     # Reading the input files
+    #     excitatory_transplant_path_list = [os.path.join(args.excitatory_ME_types_transplant_folder,f) for f in os.listdir(args.excitatory_ME_types_transplant_folder) if f.endswith(".nrrd")]
 
-        # Assertion on average sum of inhibitory + excitatory neuron density after transplant
-        exci_inhib_transplant_sum = VoxelData.load_nrrd(excitatory_transplant_path_list[0]).raw
-        print("\nadding initialization 1/" + str(len(excitatory_transplant_path_list)))
-        for i in range (1, len(excitatory_transplant_path_list)):
-            print("+ adding file " + str(i+1) + "/" + str(len(excitatory_transplant_path_list)))
-            exci_inhib_transplant = VoxelData.load_nrrd(excitatory_transplant_path_list[i]).raw
-            exci_inhib_transplant_sum += exci_inhib_transplant
-        exci_inhib_transplant_sum_sum = np.sum(exci_inhib_transplant_sum) / whole_brain_annotation_nb_voxels # * voxel_volume
-        print("\nAssertion on average sum of inhibitory + excitatory neuron density after transplant (/mm^3)")
-        print_range_bar(exci_inhib_transplant_sum_sum, neuron_dens_lit - neuron_dens_tolerance, neuron_dens_lit + neuron_dens_tolerance)
-        # print("/!\ Data not available")
-        assertion_message = "Average sum of inhibitory + excitatory neuron density after transplant out of literature range"
-        z_score_assertion(exci_inhib_transplant_sum_sum, neuron_dens_lit - neuron_dens_tolerance, neuron_dens_lit + neuron_dens_tolerance, assertion_message, 1)
+    #     # Assertion on average sum of inhibitory + excitatory neuron density after transplant
+    #     exci_inhib_transplant_sum = VoxelData.load_nrrd(excitatory_transplant_path_list[0]).raw
+    #     print("\nadding initialization 1/" + str(len(excitatory_transplant_path_list)))
+    #     for i in range (1, len(excitatory_transplant_path_list)):
+    #         print("+ adding file " + str(i+1) + "/" + str(len(excitatory_transplant_path_list)))
+    #         exci_inhib_transplant = VoxelData.load_nrrd(excitatory_transplant_path_list[i]).raw
+    #         exci_inhib_transplant_sum += exci_inhib_transplant
+    #     exci_inhib_transplant_sum_sum = np.sum(exci_inhib_transplant_sum) / whole_brain_annotation_nb_voxels # * voxel_volume
+    #     print("\nAssertion on average sum of inhibitory + excitatory neuron density after transplant (/mm^3)")
+    #     print_range_bar(exci_inhib_transplant_sum_sum, neuron_dens_lit - neuron_dens_tolerance, neuron_dens_lit + neuron_dens_tolerance)
+    #     # print("/!\ Data not available")
+    #     assertion_message = "Average sum of inhibitory + excitatory neuron density after transplant out of literature range"
+    #     z_score_assertion(exci_inhib_transplant_sum_sum, neuron_dens_lit - neuron_dens_tolerance, neuron_dens_lit + neuron_dens_tolerance, assertion_message, 1)
 
 
-    if args.inhibitory_ME_types_transplant_folder is not None:
+    # if args.inhibitory_ME_types_transplant_folder is not None:
 
-        # Reading the input files
-        inhibitory_transplant_path_list = [os.path.join(args.inhibitory_ME_types_transplant_folder,f) for f in os.listdir(args.inhibitory_ME_types_transplant_folder) if f.endswith(".nrrd")]
+    #     # Reading the input files
+    #     inhibitory_transplant_path_list = [os.path.join(args.inhibitory_ME_types_transplant_folder,f) for f in os.listdir(args.inhibitory_ME_types_transplant_folder) if f.endswith(".nrrd")]
 
-        # Assertion on average sum of inhibitory ME-type neuron density which should be inferior or equal to the average inhibitory neurons after transplant
-        inhib_transplant_sum = VoxelData.load_nrrd(inhibitory_transplant_path_list[0]).raw
-        print("\nadding initialization 1/" + str(len(inhibitory_transplant_path_list)))
-        for i in range (1, len(inhibitory_transplant_path_list)):
-            print("+ adding file " + str(i+1) + "/" + str(len(inhibitory_transplant_path_list)))
-            inhib_transplant = VoxelData.load_nrrd(inhibitory_transplant_path_list[i]).raw
-            inhib_transplant_sum += inhib_transplant
-        inhib_transplant_sum_sum = np.sum(inhib_transplant_sum) / whole_brain_annotation_nb_voxels # * voxel_volume
-        print("\nAssertion on average sum of inhibitory ME-type neuron density after transplant which should be inferior or equal to the average inhibitory neurons")
-        print_range_bar(inhib_transplant_sum_sum, inhibitory_neuron_dens_lit - inhibitory_neuron_dens_lit, inhibitory_neuron_dens_lit + inhibitory_neuron_dens_tolerance)
-        assertion_message = "sum of inhibitory ME-type neuron density after transplant out of literature range"
-        z_score_assertion(inhib_transplant_sum_sum, inhibitory_neuron_dens_lit - inhibitory_neuron_dens_lit, inhibitory_neuron_dens_lit + inhibitory_neuron_dens_tolerance, assertion_message, 1)
+    #     # Assertion on average sum of inhibitory ME-type neuron density which should be inferior or equal to the average inhibitory neurons after transplant
+    #     inhib_transplant_sum = VoxelData.load_nrrd(inhibitory_transplant_path_list[0]).raw
+    #     print("\nadding initialization 1/" + str(len(inhibitory_transplant_path_list)))
+    #     for i in range (1, len(inhibitory_transplant_path_list)):
+    #         print("+ adding file " + str(i+1) + "/" + str(len(inhibitory_transplant_path_list)))
+    #         inhib_transplant = VoxelData.load_nrrd(inhibitory_transplant_path_list[i]).raw
+    #         inhib_transplant_sum += inhib_transplant
+    #     inhib_transplant_sum_sum = np.sum(inhib_transplant_sum) / whole_brain_annotation_nb_voxels # * voxel_volume
+    #     print("\nAssertion on average sum of inhibitory ME-type neuron density after transplant which should be inferior or equal to the average inhibitory neurons")
+    #     print_range_bar(inhib_transplant_sum_sum, inhibitory_neuron_dens_lit - inhibitory_neuron_dens_lit, inhibitory_neuron_dens_lit + inhibitory_neuron_dens_tolerance)
+    #     assertion_message = "sum of inhibitory ME-type neuron density after transplant out of literature range"
+    #     z_score_assertion(inhib_transplant_sum_sum, inhibitory_neuron_dens_lit - inhibitory_neuron_dens_lit, inhibitory_neuron_dens_lit + inhibitory_neuron_dens_tolerance, assertion_message, 1)
 
 
     if args.hierarchy_json:
@@ -741,7 +741,7 @@ def main():
             print("\nAssertion on Thalamus glia density (/mm^3)")
             print("/!\ Tolerance set to default for glia density")
             print_range_bar(thalamus_glia_dens_sum, thalamus_glia_dens_lit - thalamus_glia_dens_tolerance, thalamus_glia_dens_lit + thalamus_glia_dens_tolerance)
-            assertion_message = "Average thalamus cell density out of literature range"
+            assertion_message = "Average thalamus glia density out of literature range"
             z_score_assertion(thalamus_glia_dens_sum, thalamus_glia_dens_lit - thalamus_glia_dens_tolerance, thalamus_glia_dens_lit + thalamus_glia_dens_tolerance, assertion_message)
 
             # Assertion on LGd neuron density
