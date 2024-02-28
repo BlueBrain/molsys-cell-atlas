@@ -202,11 +202,12 @@ def main():
         annotation = VoxelData.load_nrrd(args.brain_regions).raw
 
         # Assertion on the total volumetry of the annotation
-        whole_brain_annotation_dens = len(np.where(annotation != 0)[0])
+        whole_brain_annotation_nb_voxels = len(np.where(annotation != 0)[0])
+        whole_brain_annotation_vol = whole_brain_annotation_nb_voxels*voxel_volume
         print("\nAssertion on total annotation volumetry (mm^3)")
-        print_range_bar(whole_brain_annotation_dens, wh_mouse_brain_nb_vox_lit - wh_mouse_brain_nb_vox_tolerance, wh_mouse_brain_nb_vox_lit + wh_mouse_brain_nb_vox_tolerance)
+        print_range_bar(whole_brain_annotation_vol, wh_mouse_brain_nb_vox_lit*voxel_volume - wh_mouse_brain_nb_vox_tolerance*voxel_volume, wh_mouse_brain_nb_vox_lit*voxel_volume + wh_mouse_brain_nb_vox_tolerance*voxel_volume)
         assertion_message = "total annotation volumetry out of literature range"
-        z_score_assertion(whole_brain_annotation_dens, wh_mouse_brain_nb_vox_lit - wh_mouse_brain_nb_vox_tolerance, wh_mouse_brain_nb_vox_lit + wh_mouse_brain_nb_vox_tolerance, assertion_message, 2)
+        z_score_assertion(whole_brain_annotation_vol, wh_mouse_brain_nb_vox_lit*voxel_volume - wh_mouse_brain_nb_vox_tolerance*voxel_volume, wh_mouse_brain_nb_vox_lit*voxel_volume + wh_mouse_brain_nb_vox_tolerance*voxel_volume, assertion_message, 2)
 
 
     if args.cell_density is not None:
@@ -215,7 +216,7 @@ def main():
         cell = VoxelData.load_nrrd(args.cell_density).raw
 
         # Assertion on total cell densities
-        cell_dens = np.sum(cell) / whole_brain_annotation_dens# * voxel_volume
+        cell_dens = np.sum(cell) / whole_brain_annotation_nb_voxels# * voxel_volume
         print("\nAssertion on total cell densities (/mm^3)")
         print_range_bar(cell_dens, cell_dens_lit - cell_dens_tolerance, cell_dens_lit + cell_dens_tolerance)
         assertion_message = "total cell densities out of literature range"
@@ -232,14 +233,14 @@ def main():
         oligodendrocyte = VoxelData.load_nrrd(os.path.join(args.neuron_glia_density_folder, "oligodendrocyte_density.nrrd")).raw
 
         # Assertion on total neuron densities
-        neuron_dens = np.sum(neuron) / whole_brain_annotation_dens # * voxel_volume
+        neuron_dens = np.sum(neuron) / whole_brain_annotation_nb_voxels # * voxel_volume
         print("\nAssertion on total neuron densities (/mm^3)")
         print_range_bar(neuron_dens, neuron_dens_lit - neuron_dens_tolerance, neuron_dens_lit + neuron_dens_tolerance)
         assertion_message = "total neuron densities out of literature range"
         z_score_assertion(neuron_dens, neuron_dens_lit - neuron_dens_tolerance, neuron_dens_lit + neuron_dens_tolerance, assertion_message, 2)
 
         # Assertion on total glia densities
-        glia_dens = np.sum(glia) / whole_brain_annotation_dens # * voxel_volume
+        glia_dens = np.sum(glia) / whole_brain_annotation_nb_voxels # * voxel_volume
         print("\nAssertion on total glia densities (/mm^3)")
         print_range_bar(glia_dens, glia_dens_lit - glia_dens_tolerance, glia_dens_lit + glia_dens_tolerance)
         assertion_message = "total glia densities out of literature range"
@@ -247,7 +248,7 @@ def main():
 
         # Assertion on total sum of glia density subtypes
         sum_glia = astrocyte + microglia + oligodendrocyte
-        sum_glia_dens = int(np.sum(sum_glia)) / whole_brain_annotation_dens # * voxel_volume)
+        sum_glia_dens = int(np.sum(sum_glia)) / whole_brain_annotation_nb_voxels # * voxel_volume)
         print("\nAssertion on sum of glia density subtypes (/mm^3)")
         print_range_bar(sum_glia_dens, glia_dens_lit - glia_dens_tolerance, glia_dens_lit + glia_dens_tolerance)
         assertion_message = "total sum of glia density subtypes out of literature range"
@@ -255,7 +256,7 @@ def main():
 
         # Assertion on total sum of glia density subtypes
         sum_glia = astrocyte + microglia + oligodendrocyte
-        sum_glia_dens = int(np.sum(sum_glia)) / whole_brain_annotation_dens # * voxel_volume)
+        sum_glia_dens = int(np.sum(sum_glia)) / whole_brain_annotation_nb_voxels # * voxel_volume)
         print("\nAssertion on sum of glia density subtypes (/mm^3)")
         print_range_bar(sum_glia_dens, glia_dens_lit - glia_dens_tolerance, glia_dens_lit + glia_dens_tolerance)
         assertion_message = "total sum of glia density subtypes out of literature range"
@@ -284,7 +285,7 @@ def main():
         vip = VoxelData.load_nrrd(os.path.join(args.inhibitory_density_folder, "vip+_density.nrrd")).raw
 
         # Assertion on total inhibitory neuron densities
-        inhi_dens = np.sum(gad) / whole_brain_annotation_dens # * voxel_volume
+        inhi_dens = np.sum(gad) / whole_brain_annotation_nb_voxels # * voxel_volume
         print("\nAssertion on total inhibitory neuron densities (/mm^3)")
         print("/!\ Tolerance set to default for neuron density")
         # print("/!\ Default tolerance increased by a factor of 2.5")
@@ -293,21 +294,21 @@ def main():
         z_score_assertion(inhi_dens, inhibitory_neuron_dens_lit - inhibitory_neuron_dens_tolerance, inhibitory_neuron_dens_lit + inhibitory_neuron_dens_tolerance, assertion_message)
 
         # Assertion on total sst densities
-        sst_dens = np.sum(sst) / whole_brain_annotation_dens # * voxel_volume
+        sst_dens = np.sum(sst) / whole_brain_annotation_nb_voxels # * voxel_volume
         print("\nAssertion on total sst densities (/mm^3)")
         print_range_bar(sst_dens, sst_dens_lit - sst_dens_tolerance, sst_dens_lit + sst_dens_tolerance)
         assertion_message = "total sst densities out of literature range"
         z_score_assertion(sst_dens, sst_dens_lit - sst_dens_tolerance, sst_dens_lit + sst_dens_tolerance, assertion_message, 2)
 
         # Assertion on total pv densities
-        pv_dens = np.sum(pv) / whole_brain_annotation_dens # * voxel_volume
+        pv_dens = np.sum(pv) / whole_brain_annotation_nb_voxels # * voxel_volume
         print("\nAssertion on total pv densities (/mm^3)")
         print_range_bar(pv_dens, pv_dens_lit - pv_dens_tolerance, pv_dens_lit + pv_dens_tolerance)
         assertion_message = "total pv densities out of literature range"
         z_score_assertion(pv_dens, pv_dens_lit - pv_dens_tolerance, pv_dens_lit + pv_dens_tolerance, assertion_message, 2)
 
         # Assertion on total vip density
-        vip_dens = np.sum(vip) / whole_brain_annotation_dens # * voxel_volume
+        vip_dens = np.sum(vip) / whole_brain_annotation_nb_voxels # * voxel_volume
         print("\nAssertion on total vip densities (/mm^3)")
         print_range_bar(vip_dens, vip_dens_lit - vip_dens_tolerance, vip_dens_lit + vip_dens_tolerance)
         assertion_message = "total vip densities out of literature range"
@@ -334,7 +335,7 @@ def main():
             print("+ adding file " + str(i+1) + "/" + str(len(inhibitory_path_list)))
             inhib = VoxelData.load_nrrd(inhibitory_path_list[i]).raw
             inhib_sum += inhib
-        inhib_sum_sum = np.sum(inhib_sum) / whole_brain_annotation_dens # * voxel_volume
+        inhib_sum_sum = np.sum(inhib_sum) / whole_brain_annotation_nb_voxels # * voxel_volume
         print("\nAssertion on total sum of inhibitory ME-type neuron densities which should be inferior or equal to the total inhibitory neuron densities")
         print_range_bar(inhib_sum_sum, inhibitory_neuron_dens_lit - inhibitory_neuron_dens_lit, inhibitory_neuron_dens_lit + inhibitory_neuron_dens_tolerance)
         assertion_message = "sum of inhibitory ME-type neuron densities out of literature range"
@@ -355,7 +356,7 @@ def main():
             print("+ adding file " + str(i+1) + "/" + str(len(excitatory_path_list)))
             exci_inhib = VoxelData.load_nrrd(excitatory_path_list[i]).raw
             exci_inhib_sum += exci_inhib
-        exci_inhib_sum_sum = np.sum(exci_inhib_sum) / whole_brain_annotation_dens # * voxel_volume
+        exci_inhib_sum_sum = np.sum(exci_inhib_sum) / whole_brain_annotation_nb_voxels # * voxel_volume
         print("\nAssertion on sum of inhibitory + excitatory neuron densities (/mm^3)")
         print_range_bar(exci_inhib_sum_sum, neuron_dens_lit - neuron_dens_tolerance, neuron_dens_lit + neuron_dens_tolerance)
         # print("/!\ Data not available")
@@ -367,7 +368,7 @@ def main():
 
         # Assertion on total inhibitory sum density
         tot_inhib_sum = inhib_sum + generic_inhibitory
-        tot_inhib_sum_sum = np.sum(tot_inhib_sum) / whole_brain_annotation_dens
+        tot_inhib_sum_sum = np.sum(tot_inhib_sum) / whole_brain_annotation_nb_voxels
         print("\nAssertion total inhibitory sum density (/mm^3)")
         print_range_bar(tot_inhib_sum_sum, inhibitory_neuron_dens_lit - inhibitory_neuron_dens_tolerance, inhibitory_neuron_dens_lit + inhibitory_neuron_dens_tolerance)
         assertion_message = "total inhibitory sum density out of literature range"
@@ -390,7 +391,7 @@ def main():
             print("+ adding file " + str(i+1) + "/" + str(len(excitatory_transplant_path_list)))
             exci_inhib_transplant = VoxelData.load_nrrd(excitatory_transplant_path_list[i]).raw
             exci_inhib_transplant_sum += exci_inhib_transplant
-        exci_inhib_transplant_sum_sum = np.sum(exci_inhib_transplant_sum) / whole_brain_annotation_dens # * voxel_volume
+        exci_inhib_transplant_sum_sum = np.sum(exci_inhib_transplant_sum) / whole_brain_annotation_nb_voxels # * voxel_volume
         print("\nAssertion on sum of inhibitory + excitatory neuron densities after transplant (/mm^3)")
         print_range_bar(exci_inhib_transplant_sum_sum, neuron_dens_lit - neuron_dens_tolerance, neuron_dens_lit + neuron_dens_tolerance)
         # print("/!\ Data not available")
@@ -410,7 +411,7 @@ def main():
             print("+ adding file " + str(i+1) + "/" + str(len(inhibitory_transplant_path_list)))
             inhib_transplant = VoxelData.load_nrrd(inhibitory_transplant_path_list[i]).raw
             inhib_transplant_sum += inhib_transplant
-        inhib_transplant_sum_sum = np.sum(inhib_transplant_sum) / whole_brain_annotation_dens # * voxel_volume
+        inhib_transplant_sum_sum = np.sum(inhib_transplant_sum) / whole_brain_annotation_nb_voxels # * voxel_volume
         print("\nAssertion on total sum of inhibitory ME-type neuron densities after transplant which should be inferior or equal to the total inhibitory neurons")
         print_range_bar(inhib_transplant_sum_sum, inhibitory_neuron_dens_lit - inhibitory_neuron_dens_lit, inhibitory_neuron_dens_lit + inhibitory_neuron_dens_tolerance)
         assertion_message = "sum of inhibitory ME-type neuron densities after transplant out of literature range"
