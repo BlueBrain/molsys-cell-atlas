@@ -16,7 +16,7 @@ setup(
     license="BBP-internal-confidential",
     python_requires=">=3.8",
     install_requires=[
-        "voxcell==3.1.6",
+        "voxcell>=3.1.6",
     ],
     packages=find_packages(),
     include_package_data=True,
