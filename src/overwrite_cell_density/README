@@ -1,0 +1,25 @@
+Program: overwrite_cell_density
+Authors: Sebastien Piluso and Daniel Keller
+Copyright: Copyright EPFL 2024
+Description: Overwrite density in a certain region, given the new density in cells/mm3. It can either be scaled or uniform-- heterogeneous or homogeneous.
+
+Input:
+    1) Input directory with all of the exc cell nrrd files.
+    2) Input directory with all of the inh cell nrrd files.
+    3) Input directory with all of the glia/summed nrrd files.
+   
+    4) cell_groups.json: This assigns string names to groups of cell. The format is the group name assigned to a list of cell names without the nrrd extension.
+
+    5) overwrite_csv: Csv files with rows of: cell_type, region, density, and distribution. cell_type should be either the name of one of the groups in the cell_groups file or the name of an individual nrrd file (without the extension.) Region should be the integer assignment of the region from the atlas annotation. Density should be the new density in cells/mm3. Distribution can either be homogeneous or heterogeneous. Homogeneous assigned uniform density the the region. If multiple cell types are present in the assigned group, it divides the density according to the initial fraction of density. Heterogeneous scales already present density to match the desired density.
+
+    6) Output folder 1. The directory to write the output in from input folder 1.
+    7) Output folder 1. The directory to write the output in from input folder 2.
+    8) Output folder 1. The directory to write the output in from input folder 3.
+These items are the inputs to the program. So, for example, an invokation of the program might look like:
+
+python3 overwrite_cell_density.py <input_nrrds1> <input_nrrds2> <input_nrrds3> cell_groups.json overwrite_csv.csv <output_folder1> <output_folder2> <output_folder3>
+
+Outputs: rescaled nrrd files in new directories corresponding to the three original input folders, and with the same nrrd names as the originals.
+
+Notes: Examples of the json and csv files can be found in the repository. We will maintain a master csv for all overwrites in the repository, so please check in your alterations to the csv file once you are satisfied with them. 
+

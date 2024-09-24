@@ -13,17 +13,53 @@ stages:
   - build
   - publish
 
-unit_test:
+variables:
+  ATLAS_PATH: "/gpfs/bbp.cscs.ch/data/project/proj84/atlas_pipeline_runs/v1.0.1_prod"
+
+validation_test:
   stage: unit-test
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  tags:
+    - bb5_map
   before_script:
+    - module load unstable python/3.9.18
+    - python3.9 -m venv ../venv_python3.9
+    - source ../venv_python3.9/bin/activate
     - pip install .
   script:
     - export PYTHONPATH=.:$PYTHONPATH
-    - densities-validation  --annotation tests/annotation_ccfv2_25.nrrd
-    - densities-validation  --annotation tests/annotation_ccfv2_25.nrrd  --hierarchy tests/1.json  --cell_density tests/overall_cell_density_correctednissl.nrrd  --neuron_glia_density_folder tests/cell_densities_correctednissl
+    - densities-validation  --annotation $ATLAS_PATH/annotation_ccfv3_l23split_barrelsplit.nrrd
+    - densities-validation  --annotation $ATLAS_PATH/annotation_ccfv3_l23split_barrelsplit.nrrd  --hierarchy $ATLAS_PATH/hierarchy_ccfv3_l23split_barrelsplit.json  --cell_density $ATLAS_PATH/overall_cell_density_correctednissl.nrrd  --neuron_glia_density_folder $ATLAS_PATH/cell_densities_correctednissl
+    - densities-validation  --annotation $ATLAS_PATH/annotation_ccfv3_l23split_barrelsplit.nrrd  --inhibitory_ME_types_folder $ATLAS_PATH/mtypes_densities_probability_map_validated  --excitatory_ME_types_folder $ATLAS_PATH/excitatory_split_validated  > $LOG_PATH/validation_origin.log
+  artifacts:
+    paths:
+      - '**/validation_*.log'
   variables:
+    LOG_PATH: .
+    KUBERNETES_MEMORY_LIMIT: 8Gi
+    KUBERNETES_MEMORY_REQUEST: 8Gi
+
+overwrite_test:
+  stage: unit-test
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  tags:
+    - bb5_map
+  before_script:
+    - module load unstable python/3.9.18
+    - python3.9 -m venv ../venv_python3.9
+    - source ../venv_python3.9/bin/activate
+    - pip install .
+  script:
+    - python3 src/overwrite_cell_density/overwrite_cell_density.py  $ATLAS_PATH/mtypes_densities_probability_map_validated  $ATLAS_PATH/excitatory_split_validated  ''  src/overwrite_cell_density/cell_groups.json  src/overwrite_cell_density/overwrite_csv.csv  $OVERWRITTEN_DENSITIES/mtypes_densities_probability_map  $OVERWRITTEN_DENSITIES/excitatory_split $OVERWRITTEN_DENSITIES/
+    - export PYTHONPATH=.:$PYTHONPATH
+    - densities-validation  --annotation $ATLAS_PATH/annotation_ccfv3_l23split_barrelsplit.nrrd  --inhibitory_ME_types_folder $OVERWRITTEN_DENSITIES/mtypes_densities_probability_map  --excitatory_ME_types_folder $OVERWRITTEN_DENSITIES/excitatory_split  > $OVERWRITTEN_DENSITIES/validation_overwrite.log
+  artifacts:
+    paths:
+      - '**/validation_*.log'
+  variables:
+    OVERWRITTEN_DENSITIES: .
     KUBERNETES_MEMORY_LIMIT: 8Gi
     KUBERNETES_MEMORY_REQUEST: 8Gi
 

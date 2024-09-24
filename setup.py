@@ -17,6 +17,7 @@ setup(
     python_requires=">=3.8",
     install_requires=[
         "voxcell>=3.1.6",
+        "pynrrd"
     ],
     packages=find_packages(),
     include_package_data=True,
