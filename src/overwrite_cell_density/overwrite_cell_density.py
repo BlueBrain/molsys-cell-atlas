@@ -75,6 +75,9 @@ def overwrite_cell_density_constrain_me(out_dict="", cell_t="", exp_list=[], reg
             else:
                 current_mean = np.mean(density_matr[mask])
                 local_matrix[coord] = local_matrix[coord] * current_mean / total_mean * density_val
+            if np.sum(np.isnan(local_matrix.flat)):
+                print("Nan detected homogenous")
+                exit(1)
 
 #            output_density_matrix_path = os.path.join(output_folder, os.path.basename(filename))
             nrrd.write(filename, local_matrix, header=hd_local_matrix)
@@ -98,6 +101,10 @@ def overwrite_cell_density_constrain_me(out_dict="", cell_t="", exp_list=[], reg
         for filename in cell_type_files:
             cell_matrix, hd_cell_matrix = nrrd.read(filename)
             cell_matrix[coord] = cell_matrix[coord] * ratio
+            if np.sum(np.isnan(local_matrix.flat)):
+                print("Nan detected heterogenous")
+                exit(1)
+
             # save it
             nrrd.write(filename, cell_matrix, header=hd_cell_matrix)
 
