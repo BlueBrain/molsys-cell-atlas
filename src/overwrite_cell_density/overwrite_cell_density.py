@@ -101,7 +101,7 @@ def overwrite_cell_density_constrain_me(out_dict="", cell_t="", exp_list=[], reg
         for filename in cell_type_files:
             cell_matrix, hd_cell_matrix = nrrd.read(filename)
             cell_matrix[coord] = cell_matrix[coord] * ratio
-            if np.sum(np.isnan(local_matrix.flat)):
+            if np.sum(np.isnan(cell_matrix.flat)):
                 print("Nan detected heterogenous")
                 exit(1)
 
