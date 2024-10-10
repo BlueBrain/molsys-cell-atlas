@@ -109,11 +109,11 @@ def overwrite_cell_density_constrain_me(out_dict="", cell_t="", exp_list=[], reg
         expand_list2.append(full_path_n)
 
     # Input hard-coded paths: to be adapted for new versions of for any ME-type or m-type
-    annotation_path = "/gpfs/bbp.cscs.ch/home/piluso/cell_atlas/03_warped_annotation_fix_last/blue_brain_atlas_pipeline/leaves_only/annotation_ccfv2_l23split_barrelsplit.nrrd"
-
+    #annotation_path = "/gpfs/bbp.cscs.ch/home/piluso/cell_atlas/03_warped_annotation_fix_last/blue_brain_atlas_pipeline/leaves_only/annotation_ccfv2_l23split_barrelsplit.nrrd"
+    annotation_path = "/gpfs/bbp.cscs.ch/data/project/proj162/Model_Data/Brain_atlas/Mouse/resolution_25_um/version_1.1.0/Annotation_volume/annotation_ccfv3_l23split_barrelsplit_validated.nrrd"
     # Initialization of the hierarchy
-    hierarchy_input_path = "/gpfs/bbp.cscs.ch/home/piluso/cell_atlas/03_warped_annotation_fix_last/blue_brain_atlas_pipeline/leaves_only/hierarchy_ccfv2_l23split_barrelsplit.json"
-    
+    #hierarchy_input_path = "/gpfs/bbp.cscs.ch/home/piluso/cell_atlas/03_warped_annotation_fix_last/blue_brain_atlas_pipeline/leaves_only/hierarchy_ccfv2_l23split_barrelsplit.json"
+    hierarchy_input_path = "/gpfs/bbp.cscs.ch/data/project/proj162/Model_Data/Brain_atlas/Mouse/resolution_25_um/version_1.1.0/Parcellation_ontology/mba_hierarchy.json"
     region_map = RegionMap.load_json(hierarchy_input_path)
     print("    Done: All files read")
 
