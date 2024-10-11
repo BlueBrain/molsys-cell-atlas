@@ -121,11 +121,11 @@ def overwrite_cell_density_constrain_me(out_dict="", cell_t="", exp_list=[], reg
     # Input hard-coded paths: to be adapted for new versions of for any ME-type or m-type
     #annotation_path = "/gpfs/bbp.cscs.ch/home/piluso/cell_atlas/03_warped_annotation_fix_last/blue_brain_atlas_pipeline/leaves_only/annotation_ccfv2_l23split_barrelsplit.nrrd"
     #annotation_path = "/gpfs/bbp.cscs.ch/data/project/proj162/Model_Data/Brain_atlas/Mouse/resolution_25_um/version_1.1.0/Annotation_volume/annotation_ccfv3_l23split_barrelsplit_validated.nrrd"
-    annotation_path = "/gpfs/bbp.cscs.ch/home/dakeller/annotation_ccfv3_l23split_barrelsplit_validated.nrrd"    
+    #annotation_path = "/gpfs/bbp.cscs.ch/home/dakeller/annotation_ccfv3_l23split_barrelsplit_validated.nrrd"    
     # Initialization of the hierarchy
     #hierarchy_input_path = "/gpfs/bbp.cscs.ch/home/piluso/cell_atlas/03_warped_annotation_fix_last/blue_brain_atlas_pipeline/leaves_only/hierarchy_ccfv2_l23split_barrelsplit.json"
     #hierarchy_input_path = "/gpfs/bbp.cscs.ch/data/project/proj162/Model_Data/Brain_atlas/Mouse/resolution_25_um/version_1.1.0/Parcellation_ontology/mba_hierarchy.json"
-    hierarchy_input_path = "/gpfs/bbp.cscs.ch/home/dakeller/mba_hierarchy.json"
+    #hierarchy_input_path = "/gpfs/bbp.cscs.ch/home/dakeller/mba_hierarchy.json"
     region_map = RegionMap.load_json(hierarchy_input_path)
     print("    Done: All files read")
 
@@ -220,7 +220,9 @@ def get_directory_mapping(input_folder, in_dict, out_dict, output_folder):
     @param {String} csv_file The master overwrite file.
     @param {String} output_folder0 The output folder where to write all volumes with the overwritten density corresponding to those in input_folder0.
     @param {String} output_folder1 The output folder where to write all volumes with the overwritten density corresponding to those in input_folder1.
-    @param {String} output_folder2 The output folder where to write all volumes with the overwritten density corresponding to those in input_folder2.        
+    @param {String} output_folder2 The output folder where to write all volumes with the overwritten density corresponding to those in input_folder2. 
+    @param {String} annotation_path where the nrrd annotation is
+    @param {String} hierarchy_input_path where the json hierarchy file is
 """
 
 # Executions
@@ -236,6 +238,18 @@ overwrite_csv = os.path.abspath(sys.argv[5])  # 'overwrite_csv.csv'
 output_folder0 = os.path.abspath(sys.argv[6])
 output_folder1 = os.path.abspath(sys.argv[7])
 output_folder2 = os.path.abspath(sys.argv[8])
+
+if len(sys.argv) > 9:
+    annotation_path = os.path.abspath(sys.argv[9])
+else:
+    annotation_path = "/gpfs/bbp.cscs.ch/home/dakeller/annotation_ccfv3_l23split_barrelsplit_validated.nrrd"  
+
+if len(sys.argv) > 10:
+    hierarchy_input_path = os.path.abspath(sys.argv[10])
+else:
+    hierarchy_input_path = "/gpfs/bbp.cscs.ch/home/dakeller/mba_hierarchy.json"
+ 
+
 
 input_dict = {}
 output_dict = {}
