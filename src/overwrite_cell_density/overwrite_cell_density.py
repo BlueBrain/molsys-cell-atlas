@@ -239,17 +239,9 @@ output_folder0 = os.path.abspath(sys.argv[6])
 output_folder1 = os.path.abspath(sys.argv[7])
 output_folder2 = os.path.abspath(sys.argv[8])
 
-if len(sys.argv) > 9:
-    annotation_path = os.path.abspath(sys.argv[9])
-else:
-    annotation_path = "/gpfs/bbp.cscs.ch/home/dakeller/annotation_ccfv3_l23split_barrelsplit_validated.nrrd"  
+annotation_path = os.path.abspath(sys.argv[9])
 
-if len(sys.argv) > 10:
-    hierarchy_input_path = os.path.abspath(sys.argv[10])
-else:
-    hierarchy_input_path = "/gpfs/bbp.cscs.ch/home/dakeller/mba_hierarchy.json"
- 
-
+hierarchy_input_path = os.path.abspath(sys.argv[10])
 
 input_dict = {}
 output_dict = {}
