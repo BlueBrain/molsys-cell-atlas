@@ -52,7 +52,7 @@ overwrite_test:
     - source ../venv_python3.9/bin/activate
     - pip install .
   script:
-    - python3 src/overwrite_cell_density/overwrite_cell_density.py  $ATLAS_PATH/mtypes_densities_probability_map_validated  $ATLAS_PATH/excitatory_split_validated  ''  src/overwrite_cell_density/cell_groups.json  src/overwrite_cell_density/overwrite_csv.csv  $OVERWRITTEN_DENSITIES/mtypes_densities_probability_map  $OVERWRITTEN_DENSITIES/excitatory_split $OVERWRITTEN_DENSITIES/ $ATLAS_PATH/annotation_ccfv3_l23split_barrelsplit_validated.nrrd and the hierarchy_path should be $ATLAS_PATH/hierarchy_ccfv3_l23split_barrelsplit.json
+    - python3 src/overwrite_cell_density/overwrite_cell_density.py  $ATLAS_PATH/mtypes_densities_probability_map_validated  $ATLAS_PATH/excitatory_split_validated  ''  src/overwrite_cell_density/cell_groups.json  src/overwrite_cell_density/overwrite_csv.csv  $OVERWRITTEN_DENSITIES/mtypes_densities_probability_map  $OVERWRITTEN_DENSITIES/excitatory_split $OVERWRITTEN_DENSITIES/ $ATLAS_PATH/annotation_ccfv3_l23split_barrelsplit_validated.nrrd $ATLAS_PATH/hierarchy_ccfv3_l23split_barrelsplit.json
     - export PYTHONPATH=.:$PYTHONPATH
     - densities-validation  --annotation $ATLAS_PATH/annotation_ccfv3_l23split_barrelsplit.nrrd  --inhibitory_ME_types_folder $OVERWRITTEN_DENSITIES/mtypes_densities_probability_map  --excitatory_ME_types_folder $OVERWRITTEN_DENSITIES/excitatory_split  > $OVERWRITTEN_DENSITIES/validation_overwrite.log
   artifacts:
