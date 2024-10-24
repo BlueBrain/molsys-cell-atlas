@@ -489,7 +489,7 @@ def main():
             name_list = []
             for j in range(len(ids)):
                 name = region_map.get(ids[j], "name")
-                acr_name_listlist.append(name)
+                name_list.append(name)
             name_list = sorted(name_list)
             children_barrel_name_list.append(name_list)
         flattened_children_barrel_name_list = [item for sublist in children_barrel_name_list for item in sublist]
