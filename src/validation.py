@@ -473,21 +473,21 @@ def main():
 
         # barrels regions identification
         pattern = r"^SSp-bfd-[A-Za-z0-9]+$"
-        region_ids = np.array(list(regionmap.find("SSp-bfd", attr="acronym", with_descendants=True)))
+        region_ids = np.array(list(region_map.find("SSp-bfd", attr="acronym", with_descendants=True)))
         barrel_hierarchy_names = []
         for rid in region_ids:
-            racronym = regionmap.get(rid, attr="acronym")
+            racronym = region_map.get(rid, attr="acronym")
             if re.match(pattern, racronym):
                 barrel_hierarchy_names.append(racronym)
         children_barrel_name_list = []
         barrel_hierarchy_names = sorted(barrel_hierarchy_names)
         for i in range(len(barrel_hierarchy_names)):
             accronym = barrel_hierarchy_names[i]
-            ids = regionmap.find(accronym, "acronym", with_descendants=True)
+            ids = region_map.find(accronym, "acronym", with_descendants=True)
             ids = list(ids)
             name_list = []
             for j in range(len(ids)):
-                name = regionmap.get(ids[j], "name")
+                name = region_map.get(ids[j], "name")
                 acr_name_listlist.append(name)
             name_list = sorted(name_list)
             children_barrel_name_list.append(name_list)
