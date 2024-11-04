@@ -102,7 +102,6 @@ def parse_args(args):
 
 
 # =============================================================================================
-# Funtions
 
 # print("\nLaunching the assertions and writing ouptut result in the log file...")
 
@@ -112,6 +111,50 @@ def parse_args(args):
 # sys.stdout = log_file
 
 # Functions
+def flatten_list(ll):
+    return [i for sublist in ll for i in sublist]
+
+def assert_densities(annotation,flattened_region_list, dens_type, gad, neuron=None):
+    """
+    Performs assertion on a specific density
+    @method assert_density
+    @param {np.array} annotation
+    @param {list} flattened list of region names
+    @param {str} type of density, e.g. "excitatory neuron density"
+    @param {np.array} gad
+    @param {np.array/None} neuron array. If provided, uses neuron - gad, otherwise only uses gad
+    @return {None}
+
+    """
+    for region_ids in flattened_region_list:
+        assert_density(annotation, region_ids, dens_type, gad, neuron=neuron, region_label=None)
+
+
+def assert_density(annotation, region_ids, dens_type, gad, neuron=None, region_label=None):
+    """
+    Performs assertion on a specific density
+    @method assert_density
+    @param {np.array} annotation
+    @param {str} region names
+    @param {str} type of density, e.g. "excitatory neuron density"
+    @param {np.array} gad
+    @param {np.array/None} neuron array. If provided, uses neuron - gad, otherwise only uses gad
+    @return {None}
+
+    """
+    if neuron:
+        dens = neuron[np.isin(annotation, list(region_ids))] - gad[np.isin(annotation, list(region_ids))]
+    else:
+        dens = gad[np.isin(annotation, list(region_ids))]
+    region_label = region_label if region_label else region_ids
+    print(f"Assertion on {dens_type} for {region_label}")
+    assertion_message = f"ERROR: {dens_type} for {region_label}"
+    if dens.sum() > 0:
+        print(f"Validated: {dens_type} is not zero for {region_label}")
+    else:
+        print(assertion_message)
+        raise DensityError(assertion_message)
+
 def print_range_bar(value, min_value, max_value, bar_length=40):
     """
     Printing the range bar of the given density compared to literature plus some statisics elements (std, z-score)
@@ -482,17 +525,16 @@ def main():
                 barrel_hierarchy_names.append(racronym)
         children_barrel_name_list = []
         barrel_hierarchy_names = sorted(barrel_hierarchy_names)
-        for i in range(len(barrel_hierarchy_names)):
-            accronym = barrel_hierarchy_names[i]
-            ids = region_map.find(accronym, "acronym", with_descendants=True)
-            ids = list(ids)
+        # for i in range(len(barrel_hierarchy_names)):
+        for acronym in barrel_hierarchy_names:
+            ids = list(region_map.find(acronym, "acronym", with_descendants=True))
             name_list = []
-            for j in range(len(ids)):
-                name = region_map.get(ids[j], "name")
+            for id_ in ids:
+                name = region_map.get(id_, "name")
                 name_list.append(name)
-            name_list = sorted(name_list)
+            name_list.sort()
             children_barrel_name_list.append(name_list)
-        flattened_children_barrel_name_list = [item for sublist in children_barrel_name_list for item in sublist]
+        flattened_children_barrel_name_list = flatten_list(children_barrel_name_list)
 
         # rest_ids = region_map.find("root", attr="name", with_descendants=True)
         # rest_ids -= cerebellum_group_ids | isocortex_group_ids
@@ -605,34 +647,13 @@ def main():
             z_score_assertion(isocortex_microglia_dens_sum, isocortex_microglia_dens_lit - isocortex_microglia_dens_tolerance, isocortex_microglia_dens_lit + isocortex_microglia_dens_tolerance, assertion_message)
 
             # Assertion on barrel inhibitory neuron densities
-            for i in range(len(flattened_children_barrel_name_list)):
-                region_name = flattened_children_barrel_name_list[i]
-                barrel_inhib_dens = gad[np.isin(annotation, list(region_name))]
-                barrel_inhib_dens_sum = np.sum(barrel_inhib_dens)
-                print("Assertion on inhibitory neuron density for " + region_name)
-                assertion_message = "ERROR: inhibitory neuron density for " + region_name
-                if barrel_inhib_dens_sum > 0:
-                    print("Validated: inhibitory neuron density is not zero for " + region_name)
-                else:
-                    print(assertion_message)
-                    raise DensityError(assertion_message)
-                    return
-
+            assert_densities(annotation, flattened_children_barrel_name_list,
+                           'inhibitory neuron density', gad)
+            
             # Assertion on barrel excitatory neuron densities (except layer 1)
             filtered_list = [item for item in flattened_children_barrel_name_list if "layer 1" not in item]
-            for i in range(len(filtered_list)):
-                region_name = filtered_list[i]
-                barrel_exc_dens = neuron[np.isin(annotation, list(region_name))] - gad[np.isin(annotation, list(region_name))]
-                barrel_exc_dens_sum = np.sum(barrel_exc_dens)
-                print("Assertion on excitatory neuron density for " + region_name)
-                assertion_message = "ERROR: excitatory neuron density for " + region_name
-                if barrel_exc_dens_sum > 0:
-                    print("Validated: excitatory neuron density is not zero for " + region_name)
-                else:
-                    print(assertion_message)
-                    raise DensityError(assertion_message)
-                    return
-
+            assert_densities(annotation, filtered_list,
+                           'excitatory neuron density', gad, neuron=neuron)
 
             # ---------------------------------------------------------------------------------------------
 
@@ -777,83 +798,17 @@ def main():
             assertion_message = "Average hippocampus microglia density out of literature range"
             z_score_assertion(hippocampus_microglia_dens_sum, hippocampus_microglia_dens_lit - hippocampus_microglia_dens_tolerance, hippocampus_microglia_dens_lit + hippocampus_microglia_dens_tolerance, assertion_message)
 
-            # Assertion on inhibitory neuron density for Field CA1
-            Field_CA1_inh_dens = gad[np.isin(annotation, list(Field_CA1))]
-            Field_CA1_inh_dens_sum = np.sum(Field_CA1_inh_dens)
-            print("Assertion on inhibitory neuron density for Field CA1")
-            assertion_message = "ERROR: inhibitory neuron density for Field CA1 is zero"
-            if Field_CA1_inh_dens_sum > 0:
-                print("Validated: Field CA1 inhibitory neuron density is not zero")
-            else:
-                print(assertion_message)
-                raise DensityError(assertion_message)
-                return
-
-            # Assertion on excitatory neuron density for Field CA1
-            Field_CA1_exc_dens = neuron[np.isin(annotation, list(Field_CA1))] - gad[np.isin(annotation, list(Field_CA1))]
-            Field_CA1_exc_dens_sum = np.sum(Field_CA1_exc_dens)
-            print("Assertion on excitatory neuron density for Field CA1")
-            assertion_message = "ERROR: excitatory neuron density for Field CA1 is zero"
-            if Field_CA1_exc_dens_sum > 0:
-                print("Validated: Field CA1 excitatory neuron density is not zero")
-            else:
-                print(assertion_message)
-                raise DensityError(assertion_message)
-                return
-
-            # Assertion on inhibitory neuron density for Field CA2
-            Field_CA2_inh_dens = gad[np.isin(annotation, list(Field_CA2))]
-            Field_CA2_inh_dens_sum = np.sum(Field_CA2_inh_dens)
-            print("Assertion on inhibitory neuron density for Field CA2")
-            assertion_message = "ERROR: inhibitory neuron density for Field CA2 is zero"
-            if Field_CA2_inh_dens_sum > 0:
-                print("Validated: Field CA2 inhibitory neuron density is not zero")
-            else:
-                print(assertion_message)
-                raise DensityError(assertion_message)
-                return
-
-            # Assertion on excitatory neuron density for Field CA2
-            Field_CA2_exc_dens = neuron[np.isin(annotation, list(Field_CA2))] - gad[np.isin(annotation, list(Field_CA2))]
-            Field_CA2_exc_dens_sum = np.sum(Field_CA2_exc_dens)
-            print("Assertion on excitatory neuron density for Field CA2")
-            assertion_message = "ERROR: excitatory neuron density for Field CA2 is zero"
-            if Field_CA2_exc_dens_sum > 0:
-                print("Validated: Field CA2 excitatory neuron density is not zero")
-            else:
-                print(assertion_message)
-                raise DensityError(assertion_message)
-                return
-
-            # Assertion on inhibitory neuron density for Field CA3
-            Field_CA3_inh_dens = gad[np.isin(annotation, list(Field_CA3))]
-            Field_CA3_inh_dens_sum = np.sum(Field_CA3_inh_dens)
-            print("Assertion on inhibitory neuron density for Field CA3")
-            assertion_message = "ERROR: inhibitory neuron density for Field CA3 is zero"
-            if Field_CA3_inh_dens_sum > 0:
-                print("Validated: Field CA3 inhibitory neuron density is not zero")
-            else:
-                print(assertion_message)
-                raise DensityError(assertion_message)
-                return
-
-            # Assertion on excitatory neuron density for Field CA3
-            Field_CA3_exc_dens = neuron[np.isin(annotation, list(Field_CA3))] - gad[np.isin(annotation, list(Field_CA3))]
-            Field_CA3_exc_dens_sum = np.sum(Field_CA3_exc_dens)
-            print("Assertion on excitatory neuron density for Field CA3")
-            assertion_message = "ERROR: excitatory neuron density for Field CA3 is zero"
-            if Field_CA3_exc_dens_sum > 0:
-                print("Validated: Field CA3 excitatory neuron density is not zero")
-            else:
-                print(assertion_message)
-                raise DensityError(assertion_message)
-                return
-
-
-
-            # ---------------------------------------------------------------------------------------------
-
-
+            # Assertions on inhibitory and excitatory neuron for Field CA1/2/3
+            field_CAn = {'Field CA1': Field_CA1,
+                         'Field CA2': Field_CA2,
+                         'Field CA3': Field_CA3,}
+            for label, region in field_CAn.items():
+                # Assertion on inhibitory neuron density for Field CAn
+                assert_density(annotation, region, 'inhibitory neuron density',
+                               gad, region_label=label)
+                # Assertion on excitatory neuron density for Field CAn
+                assert_density(annotation, region, 'excitatory neuron density',
+                               gad, neuron=neuron, region_label=label)
 
             # ---------------------------------------------------------------------------------------------
             # THALAMUS
