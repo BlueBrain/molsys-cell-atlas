@@ -121,7 +121,7 @@ def parse_args(args):
 def flatten_list(ll):
     return [i for sublist in ll for i in sublist]
 
-def assert_densities(annotation,flattened_region_list, dens_type, gad, neuron=None,error_fatal):
+def assert_densities(annotation,flattened_region_list, dens_type, gad,error_fatal, neuron=None):
     """
     Performs assertion on a specific density
     @method assert_density
@@ -134,10 +134,10 @@ def assert_densities(annotation,flattened_region_list, dens_type, gad, neuron=No
 
     """
     for region_ids in flattened_region_list:
-        assert_density(annotation, region_ids, dens_type, gad, neuron=neuron, region_label=None,error_fatal)
+        assert_density(annotation, region_ids, dens_type, gad,error_fatal, neuron=neuron, region_label=None)
 
 
-def assert_density(annotation, region_ids, dens_type, gad, neuron=None, region_label=None,error_fatal):
+def assert_density(annotation, region_ids, dens_type, gad,error_fatal, neuron=None, region_label=None):
     """
     Performs assertion on a specific density
     @method assert_density
@@ -203,7 +203,7 @@ class DensityError(Exception):
         super().__init__(self.message)
 
 
-def z_score_assertion(value = 0, min_value = 0, max_value = 0, assertion_message = "", z_error=None,error_fatal):
+def z_score_assertion(value = 0, min_value = 0, max_value = 0, assertion_message = "", z_error=None,error_fatal=0):
     """
     Asserting the z-score for a given assertion is in the right range from literature:
         - |z| <= 1: VALIDATED
@@ -238,7 +238,7 @@ def z_score_assertion(value = 0, min_value = 0, max_value = 0, assertion_message
 
 
 def validate_density_volume(density_name, density_volume, min_value,
-                            max_value, z_error, tolerance_default_msg=None,error_fatal):
+                            max_value, z_error,error_fatal, tolerance_default_msg=None):
     print(f"\nAssertion on average {density_name} (/mm^3)")
     if tolerance_default_msg:
         print(f"/!\ Tolerance set to default for {tolerance_default_msg}")
@@ -249,14 +249,14 @@ def validate_density_volume(density_name, density_volume, min_value,
 
 
 def validate_average_density(density_name, density_volume, voxel_number, min_value,
-                             max_value, z_error, tolerance_default_msg=None,error_fatal):
+                             max_value, z_error,error_fatal, tolerance_default_msg=None):
     average_density = np.sum(density_volume) / voxel_number
     validate_density_volume(density_name, average_density, min_value, max_value,
-                            z_error, tolerance_default_msg,error_fatal)
+                            z_error,error_fatal, tolerance_default_msg)
 
 
 def validate_density_path(density_name, density_path, voxel_number, min_value,
-                          max_value, z_error, tolerance_default_msg=None,error_fatal):
+                          max_value, z_error,error_fatal, tolerance_default_msg=None):
     # Reading the input file
     density_volume = VoxelData.load_nrrd(density_path).raw
     # Assertion on average density
@@ -345,7 +345,7 @@ def main():
             voxel_number=whole_brain_annotation_nb_voxels,
             min_value=inhibitory_neuron_dens_lit - inhibitory_neuron_dens_tolerance,
             max_value=inhibitory_neuron_dens_lit + inhibitory_neuron_dens_tolerance,
-            z_error=None, tolerance_default_msg="neuron density",error_fatal=args.error_fatal)
+            z_error=None,error_fatal=args.error_fatal, tolerance_default_msg="neuron density")
 
         # Assertion on average sst density
         sst = validate_density_path(density_name="sst density", density_path=os.path.join(args.inhibitory_density_folder, "sst+_density.nrrd"),
@@ -657,8 +657,8 @@ def main():
             z_score_assertion(isocortex_microglia_dens_sum, isocortex_microglia_dens_lit - isocortex_microglia_dens_tolerance, isocortex_microglia_dens_lit + isocortex_microglia_dens_tolerance, assertion_message,args.error_fatal)
 
             # Assertion on barrel inhibitory neuron densities
-            assert_densities(annotation, flattened_children_barrel_name_list,
-                           'inhibitory neuron density', gad,args.error_fatal)
+            assert_densities(annotation, flattened_children_barrel_name_list, gad,args.error_fatal,
+                           'inhibitory neuron density')
             
             # Assertion on barrel excitatory neuron densities (except layer 1)
             filtered_list = [item for item in flattened_children_barrel_name_list if "layer 1" not in item]
