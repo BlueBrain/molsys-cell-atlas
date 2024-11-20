@@ -203,7 +203,7 @@ class DensityError(Exception):
         super().__init__(self.message)
 
 
-def z_score_assertion(value = 0, min_value = 0, max_value = 0, assertion_message = "", z_error=None,error_fatal=0):
+def z_score_assertion(value = 0, min_value = 0, max_value = 0, assertion_message = "",error_fatal0, z_error=None):
     """
     Asserting the z-score for a given assertion is in the right range from literature:
         - |z| <= 1: VALIDATED
@@ -244,8 +244,8 @@ def validate_density_volume(density_name, density_volume, min_value,
         print(f"/!\ Tolerance set to default for {tolerance_default_msg}")
     print_range_bar(density_volume, min_value, max_value)
     assertion_message = f"Average {density_name} out of literature range"
-    z_score_assertion(density_volume, min_value, max_value, assertion_message,
-                      z_error=z_error,error_fatal)
+    z_score_assertion(density_volume, min_value, max_value, assertion_message,error_fatal,
+                      z_error=z_error)
 
 
 def validate_average_density(density_name, density_volume, voxel_number, min_value,
