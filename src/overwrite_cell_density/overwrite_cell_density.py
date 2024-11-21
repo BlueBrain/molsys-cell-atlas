@@ -152,6 +152,7 @@ def overwrite_cell_density_constrain_me(out_dict="", cell_t="", exp_list=[], reg
     print("\n3. Setting the density...")
     print("    Setting density of the region to", density_value)
     print("    Cell type:", cell_t)
+    print("    Cell expansion: ",exp_list)
     if distrib == "homogeneous":
         print("    Homogeneous distribution")
         homogenous_processing(expand_list2, density_value, region_mask, coordinates)
