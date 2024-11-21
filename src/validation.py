@@ -815,10 +815,10 @@ def main():
             for label, region in field_CAn.items():
                 # Assertion on inhibitory neuron density for Field CAn
                 assert_density(annotation, region, 'inhibitory neuron density',
-                               gad, region_label=label)
+                               gad,args.error_fatal, region_label=label)
                 # Assertion on excitatory neuron density for Field CAn
                 assert_density(annotation, region, 'excitatory neuron density',
-                               gad, neuron=neuron, region_label=label,args.error_fatal)
+                               gad,args.error_fatal, neuron=neuron, region_label=label)
 
             # ---------------------------------------------------------------------------------------------
             # THALAMUS
