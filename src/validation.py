@@ -155,7 +155,7 @@ def assert_density(annotation, region_ids, dens_type, gad,error_fatal, neuron=No
         dens = gad[np.isin(annotation, list(region_ids))]
     region_label = region_label if region_label else region_ids
     print(f"Assertion on {dens_type} for {region_label}")
-    assertion_message = f"ERROR: {dens_type} for {region_label}"
+    assertion_message = f"ERROR: {dens_type} is zero for {region_label} with id(s) {region_ids}"
     if dens.sum() > 0:
         print(f"Validated: {dens_type} is not zero for {region_label}")
     else:
@@ -233,7 +233,7 @@ def z_score_assertion(value = 0, min_value = 0, max_value = 0, assertion_message
             raise DensityError(assertion_message)
     else:
         if error_fatal:
-            raise ValueError("Uknownn value")
+            raise ValueError("Unknown value")
     return
 
 
