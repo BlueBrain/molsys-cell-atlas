@@ -657,8 +657,7 @@ def main():
             z_score_assertion(isocortex_microglia_dens_sum, isocortex_microglia_dens_lit - isocortex_microglia_dens_tolerance, isocortex_microglia_dens_lit + isocortex_microglia_dens_tolerance, assertion_message,args.error_fatal)
 
             # Assertion on barrel inhibitory neuron densities
-            assert_densities(annotation, flattened_children_barrel_name_list, gad,args.error_fatal,
-                           'inhibitory neuron density')
+            assert_densities(annotation, flattened_children_barrel_name_list, 'inhibitory neuron density',gad,args.error_fatal)
             
             # Assertion on barrel excitatory neuron densities (except layer 1)
             filtered_list = [item for item in flattened_children_barrel_name_list if "layer 1" not in item]
