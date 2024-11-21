@@ -274,7 +274,10 @@ def main():
 
     # Parse args
     args = parse_args(sys.argv[1:])
-    error_fatal=bool(args.error_fatal)
+    error_fatal=bool(int(args.error_fatal))
+    if error_fatal:
+        print("Problem with flag.")
+        exit(1)
     # 2.1/ Assertion on whole brain volumetry and densities
     print("Assertion on whole brain volumetry and densities...")
 
