@@ -274,7 +274,7 @@ def main():
 
     # Parse args
     args = parse_args(sys.argv[1:])
-    error_fatal=int(args.error_fatal)
+    error_fatal=bool(args.error_fatal)
     # 2.1/ Assertion on whole brain volumetry and densities
     print("Assertion on whole brain volumetry and densities...")
 
