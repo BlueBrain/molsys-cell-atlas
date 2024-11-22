@@ -41,7 +41,7 @@ def parse_args(args):
 
     parser.add_argument(
         "--error_fatal",
-        metavar="bool",
+        type=bool,
         action="store_true",
         dest = "error_fatal",
         required=False,
