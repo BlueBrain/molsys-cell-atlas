@@ -41,10 +41,9 @@ def parse_args(args):
 
     parser.add_argument(
         "--error_fatal",
-        type=bool,
-        action="store_true",
         dest = "error_fatal",
         required=False,
+        metavar="int",
         help="Whether or not to catastrophically fail if an error is found.")
 
     parser.add_argument(
