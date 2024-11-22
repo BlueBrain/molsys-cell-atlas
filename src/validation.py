@@ -43,7 +43,7 @@ def parse_args(args):
         "--error_fatal",
         dest = "error_fatal",
         required=False,
-        argument_default=True,
+        action='store_true',
         metavar="error_fatal",
         help="Whether or not to catastrophically fail if an error is found.")
 
