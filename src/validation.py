@@ -204,7 +204,7 @@ class DensityError(Exception):
         super().__init__(self.message)
 
 
-def z_score_assertion(value = 0, min_value = 0, max_value = 0, assertion_message = "",error_fatal = 0, z_error=None):
+def z_score_assertion(value = 0, min_value = 0, max_value = 0, assertion_message = "",error_fatal = 1, z_error=None):
     """
     Asserting the z-score for a given assertion is in the right range from literature:
         - |z| <= 1: VALIDATED
