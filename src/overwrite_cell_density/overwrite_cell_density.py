@@ -171,6 +171,11 @@ class NaNError(Exception):
         self.message = message
         super().__init__(self.message)
 
+class DirectoryError(Exception):
+    def __init__(self, message):
+        self.message = message
+        super().__init__(self.message)
+
 def expand_list(key, cell_gr):
     """
     Returns a full list of cells corresponding to a group name
@@ -255,8 +260,7 @@ for i, in_out in enumerate(zip([input_folder0, input_folder1, input_folder2], [o
         print("making ", in_out[1])
         os.makedirs(in_out[1], exist_ok=True)
     except:
-        print("ERROR: dir creation failed")
-        exit()
+        raise DirectoryError("ERROR: dir creation failed")
 
     # remove existing nrrds in output folder
     for path in Path(in_out[1]).glob("*.nrrd"):
