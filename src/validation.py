@@ -556,8 +556,7 @@ def main():
         fiber_tracts_ids == [] or \
         hippocampus == [] or \
         striatum == []:
-            if error_fatal:
-                raise ValueError("ERROR: some region filters return empty sets")
+            raise ValueError("ERROR: some region filters return empty sets")
         # Volumes and literature definition for subregions
         # Region support in number of voxels
         isocortex_nb_vox = len(np.where(np.isin(annotation, list(isocortex)) != 0)[0])
