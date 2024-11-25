@@ -104,7 +104,7 @@ def overwrite_cell_density_constrain_me(out_dict="", cell_t="", exp_list=[], reg
             else:
                 cell_matrix[coord] = cell_matrix[coord] * ratio
             if np.sum(np.isnan(cell_matrix.flat)):
-                raise NaNError("Nan detected homogenous")
+                raise NaNError("Nan detected heterogenous")
 
             # save it
             nrrd.write(filename, cell_matrix, header=hd_cell_matrix)
