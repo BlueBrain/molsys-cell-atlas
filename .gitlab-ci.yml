@@ -29,7 +29,7 @@ validation_test:
     - pip install .
   script:
     - export PYTHONPATH=.:$PYTHONPATH
-    - densities-validation  --annotation $ATLAS_PATH/annotation_ccfv3_l23split_barrelsplit.nrrd --error_fatal 0
+    - densities-validation  --annotation $ATLAS_PATH/annotation_ccfv3_l23split_barrelsplit.nrrd --error_fatal 1
     - densities-validation  --annotation $ATLAS_PATH/annotation_ccfv3_l23split_barrelsplit.nrrd --error_fatal 0 --hierarchy $ATLAS_PATH/hierarchy_ccfv3_l23split_barrelsplit.json  --cell_density $ATLAS_PATH/overall_cell_density_correctednissl.nrrd  --neuron_glia_density_folder $ATLAS_PATH/cell_densities_correctednissl --inhibitory_density_folder $ATLAS_PATH/inhibitory_neuron_densities_linprog_correctednissl
     - densities-validation  --annotation $ATLAS_PATH/annotation_ccfv3_l23split_barrelsplit.nrrd --error_fatal 0 --inhibitory_ME_types_folder $ATLAS_PATH/mtypes_densities_probability_map_validated  --excitatory_ME_types_folder $ATLAS_PATH/excitatory_split_validated  > $LOG_PATH/validation_origin.log
   artifacts:
