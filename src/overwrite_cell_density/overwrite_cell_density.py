@@ -77,7 +77,7 @@ def overwrite_cell_density_constrain_me(out_dict="", cell_t="", exp_list=[], reg
                 local_matrix[coord] = local_matrix[coord] * current_mean / total_mean * density_val
             if np.sum(np.isnan(local_matrix.flat)):
                 print("Nan detected homogenous")
-                raise Exception(<print-message>)
+                raise NaNError("Nan detected homogenous")
 
 #            output_density_matrix_path = os.path.join(output_folder, os.path.basename(filename))
             nrrd.write(filename, local_matrix, header=hd_local_matrix)
@@ -106,7 +106,7 @@ def overwrite_cell_density_constrain_me(out_dict="", cell_t="", exp_list=[], reg
                 cell_matrix[coord] = cell_matrix[coord] * ratio
             if np.sum(np.isnan(cell_matrix.flat)):
                 print("Nan detected heterogenous")
-                exit(1)
+                raise NaNError("Nan detected homogenous")
 
             # save it
             nrrd.write(filename, cell_matrix, header=hd_cell_matrix)
@@ -168,6 +168,10 @@ def overwrite_cell_density_constrain_me(out_dict="", cell_t="", exp_list=[], reg
 
     return 
 
+class NaNError(Exception):
+    def __init__(self, message):
+        self.message = message
+        super().__init__(self.message)
 
 def expand_list(key, cell_gr):
     """
