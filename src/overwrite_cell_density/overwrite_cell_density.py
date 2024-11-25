@@ -77,7 +77,7 @@ def overwrite_cell_density_constrain_me(out_dict="", cell_t="", exp_list=[], reg
                 local_matrix[coord] = local_matrix[coord] * current_mean / total_mean * density_val
             if np.sum(np.isnan(local_matrix.flat)):
                 print("Nan detected homogenous")
-                exit(1)
+                raise Exception(<print-message>)
 
 #            output_density_matrix_path = os.path.join(output_folder, os.path.basename(filename))
             nrrd.write(filename, local_matrix, header=hd_local_matrix)
