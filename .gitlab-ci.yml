@@ -62,6 +62,7 @@ overwrite_test:
     OVERWRITTEN_DENSITIES: .
     KUBERNETES_MEMORY_LIMIT: 8Gi
     KUBERNETES_MEMORY_REQUEST: 8Gi
+  timeout: 3h 0m
 
 build-package:
   rules:
