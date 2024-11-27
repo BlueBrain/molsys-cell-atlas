@@ -138,7 +138,7 @@ def assert_densities(annotation,flattened_region_list, dens_type, gad,error_fata
         assert_density(annotation, region_ids, dens_type, gad,error_fatal, neuron=neuron, region_label=None)
 
 
-def assert_density(annotation, region_ids, dens_type, gad, error_fatal, neuron=None, region_label=None):
+def assert_density(annotation, region_ids, dens_type, gad, error_fatal, neuron=[], region_label=None):
     """
     Performs assertion on a specific density
     @method assert_density
