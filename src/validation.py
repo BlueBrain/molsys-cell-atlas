@@ -122,7 +122,7 @@ def parse_args(args):
 def flatten_list(ll):
     return [i for sublist in ll for i in sublist]
 
-def assert_densities(annotation,flattened_region_list, dens_type, gad,error_fatal, neuron=None):
+def assert_densities(annotation,flattened_region_list, dens_type, gad,error_fatal, neuron=[]):
     """
     Performs assertion on a specific density
     @method assert_density
