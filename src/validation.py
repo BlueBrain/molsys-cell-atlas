@@ -150,7 +150,7 @@ def assert_density(annotation, region_ids, dens_type, gad, error_fatal, neuron=[
     @return {None}
 
     """
-    if neuron.any():
+    if len(neuron):
         dens = neuron[np.isin(annotation, list(region_ids))] - gad[np.isin(annotation, list(region_ids))]
     else:
         dens = gad[np.isin(annotation, list(region_ids))]
