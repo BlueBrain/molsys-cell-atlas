@@ -818,7 +818,7 @@ def main():
                                gad,error_fatal, region_label=label)
                 # Assertion on excitatory neuron density for Field CAn
                 assert_density(annotation, region, 'excitatory neuron density',
-                               gad,error_fatal, neuron=True, region_label=label)
+                               gad,error_fatal, neuron=neuron, region_label=label)
 
             # ---------------------------------------------------------------------------------------------
             # THALAMUS
