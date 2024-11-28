@@ -657,8 +657,9 @@ def main():
             
             # Assertion on barrel excitatory neuron densities (except layer 1)
             filtered_list = [item for item in flattened_children_barrel_name_list if "layer 1" not in item]
+            exc_density = neuron - gad
             assert_densities(annotation, filtered_list,
-                           'excitatory neuron density', gad,error_fatal)
+                           'excitatory neuron density', exc_density,error_fatal)
 
             # ---------------------------------------------------------------------------------------------
 
