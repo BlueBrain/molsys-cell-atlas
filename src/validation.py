@@ -122,42 +122,37 @@ def parse_args(args):
 def flatten_list(ll):
     return [i for sublist in ll for i in sublist]
 
-def assert_densities(annotation,flattened_region_list, dens_type, gad,error_fatal, neuron=[]):
+def assert_densities(annotation, flattened_region_list, dens_type, density, error_fatal):
     """
     Performs assertion on a specific density
     @method assert_density
     @param {np.array} annotation
     @param {list} flattened list of region names
     @param {str} type of density, e.g. "excitatory neuron density"
-    @param {np.array} gad
-    @param {np.array/None} neuron array. If provided, uses neuron - gad, otherwise only uses gad
+    @param {np.array} density
     @return {None}
 
     """
     for region_ids in flattened_region_list:
-        assert_density(annotation, region_ids, dens_type, gad,error_fatal, neuron=neuron, region_label=None)
+        assert_density(annotation, region_ids, dens_type, density, error_fatal, region_label=None)
 
 
-def assert_density(annotation, region_ids, dens_type, gad, error_fatal, neuron=[], region_label=None):
+def assert_density(annotation, region_ids, dens_type, density, error_fatal, region_label=None):
     """
     Performs assertion on a specific density
     @method assert_density
     @param {np.array} annotation
     @param {str} region names
     @param {str} type of density, e.g. "excitatory neuron density"
-    @param {np.array} gad
-    @param {np.array/None} neuron array. If provided, uses neuron - gad, otherwise only uses gad
+    @param {np.array} density
     @return {None}
 
     """
-    if len(neuron):
-        dens = neuron[np.isin(annotation, list(region_ids))] - gad[np.isin(annotation, list(region_ids))]
-    else:
-        dens = gad[np.isin(annotation, list(region_ids))]
+    density_mask = density[np.isin(annotation, list(region_ids))]
     region_label = region_label if region_label else region_ids
     print(f"Assertion on {dens_type} for {region_label} for error flag {error_fatal}")
     assertion_message = f"ERROR: {dens_type} is zero for {region_label} with id(s) {region_ids}"
-    if dens.sum() > 0:
+    if density_mask.sum() > 0:
         print(f"Validated: {dens_type} is not zero for {region_label}")
     else:
         print(assertion_message)
@@ -658,7 +653,7 @@ def main():
             z_score_assertion(isocortex_microglia_dens_sum, isocortex_microglia_dens_lit - isocortex_microglia_dens_tolerance, isocortex_microglia_dens_lit + isocortex_microglia_dens_tolerance, assertion_message,error_fatal)
 
             # Assertion on barrel inhibitory neuron densities
-            assert_densities(annotation, flattened_children_barrel_name_list, 'inhibitory neuron density',gad,error_fatal)
+            assert_densities(annotation, flattened_children_barrel_name_list, 'inhibitory neuron density', gad, error_fatal)
             
             # Assertion on barrel excitatory neuron densities (except layer 1)
             filtered_list = [item for item in flattened_children_barrel_name_list if "layer 1" not in item]
@@ -809,16 +804,17 @@ def main():
             z_score_assertion(hippocampus_microglia_dens_sum, hippocampus_microglia_dens_lit - hippocampus_microglia_dens_tolerance, hippocampus_microglia_dens_lit + hippocampus_microglia_dens_tolerance, assertion_message,error_fatal)
 
             # Assertions on inhibitory and excitatory neuron for Field CA1/2/3
+            exc_density = neuron - gad
             field_CAn = {'Field CA1': Field_CA1,
                          'Field CA2': Field_CA2,
                          'Field CA3': Field_CA3,}
             for label, region in field_CAn.items():
                 # Assertion on inhibitory neuron density for Field CAn
                 assert_density(annotation, region, 'inhibitory neuron density',
-                               gad,error_fatal, region_label=label)
+                               gad, error_fatal, region_label=label)
                 # Assertion on excitatory neuron density for Field CAn
                 assert_density(annotation, region, 'excitatory neuron density',
-                               gad,error_fatal, neuron=neuron, region_label=label)
+                               exc_density, error_fatal, region_label=label)
 
             # ---------------------------------------------------------------------------------------------
             # THALAMUS
