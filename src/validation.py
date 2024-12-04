@@ -805,7 +805,7 @@ def main():
             z_score_assertion(hippocampus_microglia_dens_sum, hippocampus_microglia_dens_lit - hippocampus_microglia_dens_tolerance, hippocampus_microglia_dens_lit + hippocampus_microglia_dens_tolerance, assertion_message,error_fatal)
 
             # Assertions on inhibitory and excitatory neuron for Field CA1/2/3
-            exc_density = neuron - gad
+            
             field_CAn = {'Field CA1': Field_CA1,
                          'Field CA2': Field_CA2,
                          'Field CA3': Field_CA3,}
