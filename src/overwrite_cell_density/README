@@ -15,9 +15,10 @@ Input:
     6) Output folder 1. The directory to write the output in from input folder 1.
     7) Output folder 1. The directory to write the output in from input folder 2.
     8) Output folder 1. The directory to write the output in from input folder 3.
-These items are the inputs to the program. So, for example, an invokation of the program might look like:
-
-python3 overwrite_cell_density.py <input_nrrds1> <input_nrrds2> <input_nrrds3> cell_groups.json overwrite_csv.csv <output_folder1> <output_folder2> <output_folder3>
+    9) Annotation_path where the nrrd annotation is. 
+    10) Hierarchy_input_path where the json hierarchy file is. 
+    These items are the inputs to the program. So, for example, an invokation of the program might look like: 
+    python3 overwrite_cell_density.py <input_nrrds1> <in-put_nrrds2> <input_nrrds3> cell_groups.json overwrite_csv.csv <output_folder1> <out-put_folder2> <output_folder3> <annotation_path> <hierarchy_input_path>
 
 Outputs: rescaled nrrd files in new directories corresponding to the three original input folders, and with the same nrrd names as the originals.
 
