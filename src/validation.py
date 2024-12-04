@@ -12,7 +12,7 @@ from voxcell.nexus.voxelbrain import RegionMap
 from argparse import ArgumentParser
 import os, sys
 import warnings
-import inspect
+
 import re
 from src.literature import *
 # =============================================================================================
