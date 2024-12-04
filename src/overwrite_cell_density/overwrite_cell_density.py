@@ -75,6 +75,8 @@ def overwrite_cell_density_constrain_me(out_dict="", cell_t="", exp_list=[], reg
             else:
                 current_mean = np.mean(density_matr[mask])
                 local_matrix[coord] = local_matrix[coord] * current_mean / total_mean * density_val
+            if np.sum(np.isnan(local_matrix.flat)):
+                raise NaNError("Nan detected homogenous")
 
 #            output_density_matrix_path = os.path.join(output_folder, os.path.basename(filename))
             nrrd.write(filename, local_matrix, header=hd_local_matrix)
@@ -97,7 +99,13 @@ def overwrite_cell_density_constrain_me(out_dict="", cell_t="", exp_list=[], reg
 
         for filename in cell_type_files:
             cell_matrix, hd_cell_matrix = nrrd.read(filename)
-            cell_matrix[coord] = cell_matrix[coord] * ratio
+            if current_mean==0:
+                cell_matrix[coord] = density_val / len(cell_type_files) #go for homogenous if no choice
+            else:
+                cell_matrix[coord] = cell_matrix[coord] * ratio
+            if np.sum(np.isnan(cell_matrix.flat)):
+                raise NaNError("Nan detected heterogenous")
+
             # save it
             nrrd.write(filename, cell_matrix, header=hd_cell_matrix)
 
@@ -109,11 +117,13 @@ def overwrite_cell_density_constrain_me(out_dict="", cell_t="", exp_list=[], reg
         expand_list2.append(full_path_n)
 
     # Input hard-coded paths: to be adapted for new versions of for any ME-type or m-type
-    annotation_path = "/gpfs/bbp.cscs.ch/home/piluso/cell_atlas/03_warped_annotation_fix_last/blue_brain_atlas_pipeline/leaves_only/annotation_ccfv2_l23split_barrelsplit.nrrd"
-
+    #annotation_path = "/gpfs/bbp.cscs.ch/home/piluso/cell_atlas/03_warped_annotation_fix_last/blue_brain_atlas_pipeline/leaves_only/annotation_ccfv2_l23split_barrelsplit.nrrd"
+    #annotation_path = "/gpfs/bbp.cscs.ch/data/project/proj162/Model_Data/Brain_atlas/Mouse/resolution_25_um/version_1.1.0/Annotation_volume/annotation_ccfv3_l23split_barrelsplit_validated.nrrd"
+    #annotation_path = "/gpfs/bbp.cscs.ch/home/dakeller/annotation_ccfv3_l23split_barrelsplit_validated.nrrd"    
     # Initialization of the hierarchy
-    hierarchy_input_path = "/gpfs/bbp.cscs.ch/home/piluso/cell_atlas/03_warped_annotation_fix_last/blue_brain_atlas_pipeline/leaves_only/hierarchy_ccfv2_l23split_barrelsplit.json"
-    
+    #hierarchy_input_path = "/gpfs/bbp.cscs.ch/home/piluso/cell_atlas/03_warped_annotation_fix_last/blue_brain_atlas_pipeline/leaves_only/hierarchy_ccfv2_l23split_barrelsplit.json"
+    #hierarchy_input_path = "/gpfs/bbp.cscs.ch/data/project/proj162/Model_Data/Brain_atlas/Mouse/resolution_25_um/version_1.1.0/Parcellation_ontology/mba_hierarchy.json"
+    #hierarchy_input_path = "/gpfs/bbp.cscs.ch/home/dakeller/mba_hierarchy.json"
     region_map = RegionMap.load_json(hierarchy_input_path)
     print("    Done: All files read")
 
@@ -140,6 +150,7 @@ def overwrite_cell_density_constrain_me(out_dict="", cell_t="", exp_list=[], reg
     print("\n3. Setting the density...")
     print("    Setting density of the region to", density_value)
     print("    Cell type:", cell_t)
+    print("    Cell expansion: ",exp_list)
     if distrib == "homogeneous":
         print("    Homogeneous distribution")
         homogenous_processing(expand_list2, density_value, region_mask, coordinates)
@@ -155,6 +166,15 @@ def overwrite_cell_density_constrain_me(out_dict="", cell_t="", exp_list=[], reg
 
     return 
 
+class NaNError(Exception):
+    def __init__(self, message):
+        self.message = message
+        super().__init__(self.message)
+
+class DirectoryError(Exception):
+    def __init__(self, message):
+        self.message = message
+        super().__init__(self.message)
 
 def expand_list(key, cell_gr):
     """
@@ -208,7 +228,9 @@ def get_directory_mapping(input_folder, in_dict, out_dict, output_folder):
     @param {String} csv_file The master overwrite file.
     @param {String} output_folder0 The output folder where to write all volumes with the overwritten density corresponding to those in input_folder0.
     @param {String} output_folder1 The output folder where to write all volumes with the overwritten density corresponding to those in input_folder1.
-    @param {String} output_folder2 The output folder where to write all volumes with the overwritten density corresponding to those in input_folder2.        
+    @param {String} output_folder2 The output folder where to write all volumes with the overwritten density corresponding to those in input_folder2. 
+    @param {String} annotation_path where the nrrd annotation is
+    @param {String} hierarchy_input_path where the json hierarchy file is
 """
 
 # Executions
@@ -225,6 +247,10 @@ output_folder0 = os.path.abspath(sys.argv[6])
 output_folder1 = os.path.abspath(sys.argv[7])
 output_folder2 = os.path.abspath(sys.argv[8])
 
+annotation_path = os.path.abspath(sys.argv[9])
+
+hierarchy_input_path = os.path.abspath(sys.argv[10])
+
 input_dict = {}
 output_dict = {}
 
@@ -234,8 +260,7 @@ for i, in_out in enumerate(zip([input_folder0, input_folder1, input_folder2], [o
         print("making ", in_out[1])
         os.makedirs(in_out[1], exist_ok=True)
     except:
-        print("ERROR: dir creation failed")
-        exit()
+        raise DirectoryError("ERROR: dir creation failed")
 
     # remove existing nrrds in output folder
     for path in Path(in_out[1]).glob("*.nrrd"):
