@@ -1,6 +1,4 @@
-The development of this software was supported by funding to the Blue Brain Project, a research center of the École polytechnique fédérale de Lausanne (EPFL), from the Swiss government’s ETH Board of the Swiss Federal Institutes of Technology.
 
-Copyright (c) 2024 Blue Brain Project/EPFL
 
 Example of command to be run:
 
@@ -28,3 +26,7 @@ densities_validation \
     --inhibitory_ME_types_folder /gpfs/bbp.cscs.ch/home/lcristel/fix_leaves_only_rootLabel/mtypes_densities_probability_map \
     --excitatory_ME_types_transplant_folder /gpfs/bbp.cscs.ch/home/lcristel/fix_leaves_only_rootLabel/excitatory_split_transplant/ \
     --inhibitory_ME_types_transplant_folder /gpfs/bbp.cscs.ch/home/lcristel/fix_leaves_only_rootLabel/mtypes_densities_probability_map_transplant/
+
+The development of this software was supported by funding to the Blue Brain Project, a research center of the École polytechnique fédérale de Lausanne (EPFL), from the Swiss government’s ETH Board of the Swiss Federal Institutes of Technology.
+
+Copyright (c) 2024 Blue Brain Project/EPFL
